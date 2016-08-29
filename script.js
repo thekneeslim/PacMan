@@ -17,21 +17,27 @@ function initCanvas () {
   var cW = ctx.canvas.width;
   var cH = ctx.canvas.height;
 
-  // function playersObject() {
-  //   this.x = 0;
-  //   this.y = 0;
-  //   this.render = function(ctx, imgX, imgY) {
-  //
-  //   }
-  // }
   function movePM () {
     ctx.save();
     ctx.clearRect(0, 0, cW, cH);
     // DRAWING HERE
     ctx.drawImage(pacman, x, y, 30, 30);
-    x++;
     // RESTORING
     ctx.restore();
   }
+  // LISTENING FOR KEYBOARD INPUTS
+  document.addEventListener('keydown', function (event) {
+    var keyPress = (event.keyCode);
+    console.log(keyPress + " | " + event.keyCode);
+    if (keyPress === 38) {
+      y--;
+    } else if (keyPress === 40) {
+      y++;
+    } else if (keyPress === 37) {
+      x--;
+    } else if (keyPress === 39) {
+      x++;
+    }
+  });
   var movePMInterval = setInterval(movePM, 15);
 }
