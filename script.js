@@ -18,10 +18,6 @@ function defaultMovements() {
   MOVING_RIGHT = false;
 }
 
-function borderCollide() {
-
-}
-
 // LISTENING FOR KEYBOARD INPUTS
 document.addEventListener('keydown', function (event) {
   var keyPress = event.keyCode;
