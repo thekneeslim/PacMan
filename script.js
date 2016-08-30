@@ -97,27 +97,3 @@ function initCanvas () {
   }
   var movePMInterval = setInterval(movePM, 10);
 }
-
-
-
-// DRAWING PACMAN
-// function drawPacMan () {
-//   ctx.beginPath();
-//   ctx.arc(100, 100, 50, 0.25 * Math.PI, 1.25 * Math.PI, false);
-//   ctx.fillStyle = "rgb(255, 255, 0)";
-//   ctx.fill();
-//
-//   ctx.beginPath();
-//   ctx.arc(100, 100, 50, 0.75 * Math.PI, 1.75 * Math.PI, false);
-//   ctx.fill();
-//
-//   ctx.beginPath();
-//   ctx.arc(100, 75, 10, 0, 2 * Math.PI, false);
-//   ctx.fillStyle = "rgb(0, 0, 0)";
-//   ctx.fill();
-// }
-
-function hitWall() {
-  x = x;
-  y = y
-}
