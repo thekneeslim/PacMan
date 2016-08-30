@@ -38,9 +38,10 @@ function initCanvas () {
 
 function drawPM() {
   ctx.save();
-  // ctx.clearRect(0, 0, cW, cH);
+  ctx.clearRect(0, 0, cW, cH);
 
   // DRAWING HERE
+  maze()
   ctx.beginPath();
   ctx.fillStyle = "yellow";
   // ctx.shadowcolour = 'rgba(0,0,0,0)';
@@ -56,19 +57,20 @@ function drawPM() {
 }
 
 // FORMING GRIDS & NAMING THEM IN ARRAY
-for(var i = 0; i < cH; i += 40) {
-  var arrayK = [];
-  for(var k = 0; k < cW; k += 40) {
-
-    ctx.strokeRect(k, i, 40, 40);
-    arrayK.push(0);
-  }
-  cGRID.push(arrayK);
-}
+// for(var i = 0; i < cH; i += 40) {
+//   var arrayK = [];
+//   for(var k = 0; k < cW; k += 40) {
+//
+//     ctx.strokeRect(k, i, 40, 40);
+//     arrayK.push(0);
+//   }
+//   cGRID.push(arrayK);
+// }
 
 // DRAWING THE MAZE
 function maze() {
   ctx.fillStyle = "orange";
+  ctx.beginPath();
   ctx.fillRect(40, 40, 120, 80);
   ctx.fillRect(200, 0, 40, 120);
   ctx.fillRect(280, 40, 120, 80);
@@ -82,6 +84,7 @@ function maze() {
   ctx.fillRect(360, 480, 40, 40);
   ctx.fillRect(120, 440, 80, 40);
   ctx.fillRect(240, 440, 80, 40);
+  ctx.closePath();
   // GHOST HOME
   ctx.beginPath();
   ctx.moveTo(200, 280);
