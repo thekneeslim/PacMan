@@ -1,9 +1,8 @@
 body {
-  background-color: black;
+  background-color: white;
 }
 
 #gCanvas {
-  background-color: black;
-  border: 1px solid white;
-  border: 1px white solid;
+  background-color: white;
+  border: 1px solid black;
 }
