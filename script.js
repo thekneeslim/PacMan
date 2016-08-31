@@ -35,9 +35,6 @@ var rects = [ {rx : 40,   ry : 40,  w : 120,  h : 80},
               {rx : 320,  ry : 600, w : 40,   h : 40},
               {rx : 360,  ry : 560, w : 40,   h : 80}];
 
-// rects = [
-//   {rx : 220,  ry : 300, w : 40,   h : 40}
-// ]
 
 var MOVING_UP = false;
 var MOVING_DOWN = false;
@@ -70,11 +67,10 @@ function initCanvas () {
   // var pacman = new Image();
   // pacman.src = 'pacman.png';
   function pM () {
-    drawPM();
+    drawPM(pMAN[0], pMAN[1]);
     if (checkBorder(pMAN[0], pMAN[1])) {
-      // if ( isPointInRects(pMAN[0], pMAN[1])) {
-      // if (checkRectCollide(pMAN[0],pMAN[1])) {
       moveIcons();
+      teleport(pMAN[0], pMAN[1]);
       pMAN[0] = x;
       pMAN[1] = y;
       // }
@@ -83,17 +79,16 @@ function initCanvas () {
   var movePMInterval = setInterval(pM, 10);
 }
 
-function drawPM() {
+function drawPM(px, py) {
   ctx.save();
   ctx.clearRect(0, 0, cW, cH);
 
   // DRAWING HERE
-  // maze()
   drawGrid();
   ctx.beginPath();
   ctx.fillStyle = "yellow";
   // ctx.shadowcolour = 'rgba(0,0,0,0)';
-  ctx.arc(x, y, 13, 0.25*Math.PI, 1.7*Math.PI);
+  ctx.arc(px, py, 13, 0.25*Math.PI, 1.7*Math.PI);
   ctx.lineTo(x-8,y);
   ctx.stroke();
   ctx.closePath();
@@ -101,12 +96,6 @@ function drawPM() {
 
   // ctx.drawImage(pacman, x, y, 30, 30);
   // RESTORING
-
-  ctx.save();
-  ctx.fillStyle = "red";
-  ctx.fillRect(x, y, 1, 1);
-  ctx.restore();
-
   ctx.restore();
 }
 
@@ -137,6 +126,16 @@ document.addEventListener('keydown', function (event) {
     }
   // }
 });
+
+// TELEPORT FUNCTION
+  // function teleport(ix, iy) {
+  //   if (ix === 20 && iy === 340) {
+  //     ix = 420;
+  //     iy = 340;
+  //     drawPM(420, 340)
+  //     x--
+  //   }
+  // }
 
 // CHECKING BORDER
 function checkBorder (ix, iy) {
@@ -194,27 +193,18 @@ function checkRectCollide(ix, iy) {
     if (MOVING_DOWN && iy === (rects[i].ry - collisionDistance)) {
       if (ix >= (rects[i].rx - collisionDistance) && ix <= (rects[i].rx + rects[i].w + collisionDistance)) {
         return true;
-        // MOVING_DOWN = false;
-        isHit = true;
-        // y = y;
       }
     }
     // CHECKING BOTTOM COLLIDE
     if (MOVING_UP && iy === (rects[i].ry + rects[i].h + collisionDistance)) {
       if (ix >= (rects[i].rx - collisionDistance) && ix <= (rects[i].rx + rects[i].w + collisionDistance)) {
         return true;
-        // MOVING_UP = false;
-        isHit = true;
-        // y = y;
       }
     }
     // CHECKING LEFT COLLIDE
     if (MOVING_RIGHT && ix === (rects[i].rx - collisionDistance)) {
       if (iy >= (rects[i].ry - collisionDistance) && iy <= (rects[i].ry + rects[i].h + collisionDistance)) {
         return true;
-        // MOVING_RIGHT = false;
-        isHit = true;
-        // x = x;
       }
     }
     // CHECKING RIGHT COLLIDE
@@ -239,118 +229,3 @@ function defaultMovements () {
   MOVING_LEFT = false;
   MOVING_RIGHT = false;
 }
-
-// CHECKING IF POINT IS IN RECTANGLE
-// function isPointInRects(px, py) {
-//   for (var i = 0; i < rects.length; i++) {
-//     if (isInRect(rects[i].rx, rects[i].ry, rects[i].w, rects[i].h, px, py)) {
-//       return true;
-//     }
-//   }
-//   return false;
-// }
-// //
-// // // RETURNING T/F IF POINT IS IN RECTANGLE
-// function isInRect(rx, ry, w, h, px, py) {
-//   if (MOVING_RIGHT && px < (rx - 20)) {
-//     return false;
-//   }
-//   if (MOVING_DOWN && py < (ry - 20)) {
-//     return false;
-//   }
-//   if (MOVING_LEFT && px > (rx + w + 20)) {
-//     return false;
-//   }
-//   if (MOVING_UP && py > (ry + h + 20)) {
-//     return false;
-//   }
-//   return true;
-// }
-
-// DRAWING THE MAZE
-// function maze() {
-//   ctx.fillStyle = "orange";
-//   ctx.beginPath();
-//   ctx.fillRect(40, 40, 120, 80);
-//   ctx.fillRect(200, 0, 40, 120);
-//   ctx.fillRect(280, 40, 120, 80);
-//   ctx.fillRect(40, 160, 80, 80);
-//   ctx.fillRect(320, 160, 80, 80);
-//   ctx.fillRect(0, 280, 80, 40);
-//   ctx.fillRect(360, 280, 80, 40);
-//   ctx.fillRect(0, 360, 80, 80);
-//   ctx.fillRect(360, 360, 80, 80);
-//   ctx.fillRect(40, 480, 40, 40);
-//   ctx.fillRect(360, 480, 40, 40);
-//   ctx.fillRect(120, 440, 80, 40);
-//   ctx.fillRect(240, 440, 80, 40);
-//   ctx.closePath();
-//   // GHOST HOME
-//   ctx.beginPath();
-//   ctx.moveTo(200, 280);
-//   ctx.lineTo(120, 280);
-//   ctx.lineTo(120, 400);
-//   ctx.lineTo(320, 400);
-//   ctx.lineTo(320, 280);
-//   ctx.lineTo(240, 280);
-//   ctx.lineTo(240, 320);
-//   ctx.lineTo(280, 320);
-//   ctx.lineTo(280, 360);
-//   ctx.lineTo(160, 360);
-//   ctx.lineTo(160, 320);
-//   ctx.lineTo(200, 320);
-//   ctx.fill();
-//   ctx.closePath();
-//   // T ABOVE GHOST HOME
-//   ctx.beginPath();
-//   ctx.moveTo(160, 160);
-//   ctx.lineTo(160, 200);
-//   ctx.lineTo(200, 200);
-//   ctx.lineTo(200, 240);
-//   ctx.lineTo(240, 240);
-//   ctx.lineTo(240, 200);
-//   ctx.lineTo(280, 200);
-//   ctx.lineTo(280, 160);
-//   ctx.fill();
-//   ctx.closePath();
-//   // BOTTOM LEFT L
-//   ctx.beginPath();
-//   ctx.moveTo(40, 560);
-//   ctx.lineTo(40, 640);
-//   ctx.lineTo(120, 640);
-//   ctx.lineTo(120, 600);
-//   ctx.lineTo(80, 600);
-//   ctx.lineTo(80, 560);
-//   ctx.fill();
-//   ctx.closePath();
-// // BOTTOM LEFT INVERTED L
-//   ctx.beginPath();
-//   ctx.moveTo(120, 520);
-//   ctx.lineTo(120, 560);
-//   ctx.lineTo(160, 560);
-//   ctx.lineTo(160, 640);
-//   ctx.lineTo(200, 640);
-//   ctx.lineTo(200, 520);
-//   ctx.fill();
-//   ctx.closePath();
-//   // BOTTOM right INVERTED L
-//   ctx.beginPath();
-//   ctx.moveTo(240, 520);
-//   ctx.lineTo(240, 640);
-//   ctx.lineTo(280, 640);
-//   ctx.lineTo(280, 560);
-//   ctx.lineTo(320, 560);
-//   ctx.lineTo(320, 520);
-//   ctx.fill();
-//   ctx.closePath();
-//   // BOTTOM RIGHT L
-//   ctx.beginPath();
-//   ctx.moveTo(360, 560);
-//   ctx.lineTo(360, 600);
-//   ctx.lineTo(320, 600);
-//   ctx.lineTo(320, 640);
-//   ctx.lineTo(400, 640);
-//   ctx.lineTo(400, 560);
-//   ctx.fill();
-//   ctx.closePath();
-// }
