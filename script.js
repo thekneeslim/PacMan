@@ -4,6 +4,7 @@ var speed = 5;
 
 var GAMESTATUS = true;
 
+var ghosts        = [];
 var pMAN          = [220, 420];
 var blinkyGHOST   = [160, 320];
 var inkyGHOST     = [200, 280];
@@ -77,6 +78,14 @@ function initCanvas () {
   var movePMInterval = setInterval(pM, speed);
 }
 
+// PUSHING ALL GHOSTS COORDINATES INTO AN ARRAY
+function ghostArray() {
+  ghosts.push(blinkyGHOST);
+  ghosts.push(inkyGHOST);
+  ghosts.push(pinkyGHOST);
+  ghosts.push(clydeGHOST);
+}
+
 // PM FUNCTION
 function pM () {
   ctx.clearRect(0, 0, cW, cH);
@@ -87,10 +96,8 @@ function pM () {
   blinky();
 
   if (checkWin() === false) {
-    if (checkBorder(pMAN[0], pMAN[1])) {
-      moveIcons();
-      pMAN[0] = x;
-      pMAN[1] = y;
+    if (checkBorder(pMAN)) {
+      moveIcons(pMAN);
       eatFood();
       teleport(pMAN);
       checkDeath();
@@ -200,14 +207,41 @@ function drawFood() {
 
 // CHECKING DEATH
   function checkDeath() {
-    if (pMAN[0] === blinkyGHOST[0] && pMAN[1] === blinkyGHOST[1]) {
-      document.getElementById('loseMusic').play();
-    } else if (pMAN[0] === inkyGHOST[0] && pMAN[1] === inkyGHOST[1]) {
-      document.getElementById('loseMusic').play();
-    } else if (pMAN[0] === pinkyGHOST[0] && pMAN[1] === pinkyGHOST[1]) {
-      document.getElementById('loseMusic').play();
-    } else if (pMAN[0] === clydeGHOST[0] && pMAN[1] === clydeGHOST[1]) {
-      document.getElementById('loseMusic').play();
+    ghostArray();
+
+    for(var i = 0; i < ghosts.length; i++) {
+      // CHECKING TOP COLLIDE
+      if (pMAN[0] === ghosts[i][0]) {
+        if(pMAN[1] >= ghosts[i][1] && pMAN[1] <= (ghosts[i][1] + 30)) {
+          GAMESTATUS = false;
+          document.getElementById('loseMusic').play();
+          return true;
+        }
+      }
+      // CHECKING BOTTOM COLLIDE
+      if (pMAN[0] === (ghosts[i][0] + 30)) {
+        if(pMAN[1] >= ghosts[i][1] && pMAN[1] <= (ghosts[i][1] + 30)) {
+          GAMESTATUS = false;
+          document.getElementById('loseMusic').play();
+          return true;
+        }
+      }
+      // CHECKING LEFT COLLIDE
+      if (pMAN[1] === ghosts[i][1]) {
+        if(pMAN[0] >= ghosts[i][0] && pMAN[0] <= (ghosts[i][0] + 30)) {
+          GAMESTATUS = false;
+          document.getElementById('loseMusic').play();
+          return true;
+        }
+      }
+      // CHECKING RIGHT COLLIDE
+      if (pMAN[1] === (ghosts[i][1] + 30)) {
+        if(pMAN[0] >= ghosts[i][0] && pMAN[0] <= (ghosts[i][0] + 30)) {
+          GAMESTATUS = false;
+          document.getElementById('loseMusic').play();
+          return true;
+        }
+      }
     }
   }
 
@@ -262,28 +296,28 @@ document.addEventListener('keydown', function (event) {
   }
 
 // CHECKING BORDER
-function checkBorder (ix, iy) {
-  if(MOVING_DOWN && iy === cH - 20) {
-    y = y;
+function checkBorder (name) {
+  if(MOVING_DOWN && name[1] === cH - 20) {
+    name[1] = name[1];
     MOVING_DOWN = false;
   }
-  if (MOVING_UP && iy === 20) {
-    y = y
+  if (MOVING_UP && name[1] === 20) {
+    name[1] = name[1];
     MOVING_UP = false;
   }
-  if (MOVING_RIGHT && ix === cW - 20) {
-    x = x;
+  if (MOVING_RIGHT && name[0] === cW - 20) {
+    name[0] = name[0];
     MOVING_RIGHT = false;
   }
-  if (MOVING_LEFT && ix === 20) {
-    x = x
+  if (MOVING_LEFT && name[0] === 20) {
+    name[0] = name[0];
     MOVING_LEFT = false;
   }
   return true;
 }
 
 // MOVING ICONS
-function moveIcons () {
+function moveIcons (name) {
   var dx = 0;
   var dy = 0;
   if (MOVING_DOWN) {
@@ -301,9 +335,9 @@ function moveIcons () {
 
   // only actually set the new values of
   // x and y if there was no collision.
-  if (checkRectCollide(x + dx, y + dy) === false) {
-    x = x + dx;
-    y = y + dy;
+  if (checkRectCollide(name[0] + dx, name[1] + dy) === false) {
+    name[0] = name[0] + dx;
+    name[1] = name[1] + dy;
   }
 }
 
