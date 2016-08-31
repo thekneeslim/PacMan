@@ -45,13 +45,24 @@ var map = [   [0,0,0,0,0,2,0,0,0,0,0],
               [2,2,0,2,2,5,2,2,0,2,2],
               [0,0,0,2,5,5,5,2,0,0,0],
               [2,2,0,2,2,2,2,2,0,2,2],
-              [2,2,0,0,0,0,0,0,0,2,2],
+              [2,2,0,5,5,5,5,5,0,2,2],
               [0,0,0,2,2,0,2,2,0,0,0],
               [0,2,0,0,0,0,0,0,0,2,0],
               [0,0,0,2,2,0,2,2,0,0,0],
               [1,2,0,0,2,0,2,0,0,2,1],
               [0,2,2,0,2,0,2,0,2,2,0],
               [0,0,0,0,0,0,0,0,0,0,0]];
+
+// EATING FOOD
+function eatFood () {
+  for (var i = 0; i < map.length; i++) {
+    for(var k = 0; k< map[i].length; k++) {
+      if (Math.floor(pMAN[0]/40) ===  k && Math.floor(pMAN[1]/40) === i) {
+        map[i][k] = 3;
+      }
+    }
+  }
+}
 
 var MOVING_UP = false;
 var MOVING_DOWN = false;
@@ -70,14 +81,14 @@ window.addEventListener('load', function (event) {
 // DRAWING PACMAN GRID MAZE
 function drawGrid(rx, ry, w, h) {
   for (var i = 0; i < rects.length; i++) {
-    ctx.strokeStyle = "blue";
+    ctx.strokeStyle = "#3DFFF8";
     ctx.strokeRect(rects[i].rx, rects[i].ry, rects[i].w, rects[i].h);
   }
 }
 
 // INITIALIZING CANVAS PROPERTIES
 function initCanvas () {
-  mainGrid();
+  // mainGrid();
   // var pacman = new Image();
   // pacman.src = 'pacman.png';
   function pM () {
@@ -100,6 +111,7 @@ function drawPM() {
   // DRAWING HERE
   drawFood();
   drawGrid();
+  eatFood();
   ctx.beginPath();
   ctx.fillStyle = "yellow";
   // ctx.shadowcolour = 'rgba(0,0,0,0)';
@@ -115,18 +127,18 @@ function drawPM() {
 }
 
 // FORMING GRIDS & NAMING THEM IN ARRAY
-function mainGrid() {
-  for(var i = 0; i < cH; i += 40) {
-    var arrayK = [];
-    for(var k = 0; k < cW; k += 40) {
-
-      ctx.strokeRect(k, i, 40, 40);
-      arrayK.push(0);
-
-    }
-    cGRID.push(arrayK);
-  }
-}
+// function mainGrid() {
+//   for(var i = 0; i < cH; i += 40) {
+//     var arrayK = [];
+//     for(var k = 0; k < cW; k += 40) {
+//
+//       ctx.strokeRect(k, i, 40, 40);
+//       arrayK.push(0);
+//
+//     }
+//     cGRID.push(arrayK);
+//   }
+// }
 
 // DRAWING FOOD
 function drawFood() {
@@ -261,6 +273,8 @@ function checkRectCollide(ix, iy) {
 
   return false;
 }
+
+
 
 // TO RESTRICT MOVEMENT OF PACMAN
 function defaultMovements () {
