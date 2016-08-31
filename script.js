@@ -1,5 +1,3 @@
-var x = 220;
-var y = 420;
 var speed = 5;
 
 var GAMESTATUS = true;
@@ -10,7 +8,6 @@ var blinkyGHOST   = [160, 320];
 var inkyGHOST     = [200, 280];
 var pinkyGHOST    = [200, 320];
 var clydeGHOST    = [240, 320];
-var cGRID = [];
 
 var rects = [ {rx : 40,   ry : 40,  w : 120,  h : 80},
               {rx : 200,  ry : 0,   w : 40,   h : 120},
@@ -394,17 +391,3 @@ function defaultMovements () {
   MOVING_LEFT = false;
   MOVING_RIGHT = false;
 }
-
-// FORMING GRIDS & NAMING THEM IN ARRAY
-// function mainGrid() {
-//   for(var i = 0; i < cH; i += 40) {
-//     var arrayK = [];
-//     for(var k = 0; k < cW; k += 40) {
-//
-//       ctx.strokeRect(k, i, 40, 40);
-//       arrayK.push(0);
-//
-//     }
-//     cGRID.push(arrayK);
-//   }
-// }
