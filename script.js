@@ -1,13 +1,16 @@
 var x = 220;
 var y = 420;
+var speed = 5;
 
-var nextDir = 0;
+var GAMESTATUS = true;
+
 var pMAN          = [220, 420];
 var blinkyGHOST   = [160, 320];
 var inkyGHOST     = [200, 280];
 var pinkyGHOST    = [200, 320];
 var clydeGHOST    = [240, 320];
 var cGRID = [];
+
 var rects = [ {rx : 40,   ry : 40,  w : 120,  h : 80},
               {rx : 200,  ry : 0,   w : 40,   h : 120},
               {rx : 280,  ry : 40,  w : 120,  h : 80},
@@ -36,23 +39,23 @@ var rects = [ {rx : 40,   ry : 40,  w : 120,  h : 80},
               {rx : 320,  ry : 600, w : 40,   h : 40},
               {rx : 360,  ry : 560, w : 40,   h : 80}];
 
-var map = [   [0,0,0,0,0,2,0,0,0,0,0],
-              [1,2,2,2,0,2,0,2,2,2,1],
-              [0,2,2,2,0,2,0,2,2,2,0],
-              [0,0,0,0,0,0,0,0,0,0,0],
-              [0,2,2,0,2,2,2,0,2,2,0],
-              [0,2,2,0,2,2,2,0,2,2,0],
-              [0,0,0,0,0,0,0,0,0,0,0],
-              [2,2,0,2,2,5,2,2,0,2,2],
-              [0,0,0,2,5,5,5,2,0,0,0],
-              [2,2,0,2,2,2,2,2,0,2,2],
-              [2,2,0,5,5,5,5,5,0,2,2],
-              [0,0,0,2,2,0,2,2,0,0,0],
-              [0,2,0,0,0,0,0,0,0,2,0],
-              [0,0,0,2,2,0,2,2,0,0,0],
-              [1,2,0,0,2,0,2,0,0,2,1],
-              [0,2,2,0,2,0,2,0,2,2,0],
-              [0,0,0,0,0,0,0,0,0,0,0]];
+var map = [   [0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0],
+              [1, 2, 2, 2, 0, 2, 0, 2, 2, 2, 1],
+              [0, 2, 2, 2, 0, 2, 0, 2, 2, 2, 0],
+              [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              [0, 2, 2, 0, 2, 2, 2, 0, 2, 2, 0],
+              [0, 2, 2, 0, 2, 2, 2, 0, 2, 2, 0],
+              [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              [2, 2, 0, 2, 2, 5, 2, 2, 0, 2, 2],
+              [0, 0, 0, 2, 5, 5, 5, 2, 0, 0, 0],
+              [2, 2, 0, 2, 2, 2, 2, 2, 0, 2, 2],
+              [2, 2, 0, 5, 5, 5, 5, 5, 0, 2, 2],
+              [0, 0, 0, 2, 2, 0, 2, 2, 0, 0, 0],
+              [0, 2, 0, 0, 0, 0, 0, 0, 0, 2, 0],
+              [0, 0, 0, 2, 2, 0, 2, 2, 0, 0, 0],
+              [1, 2, 0, 0, 2, 0, 2, 0, 0, 2, 1],
+              [0, 2, 2, 0, 2, 0, 2, 0, 2, 2, 0],
+              [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]];
 
 var MOVING_UP = false;
 var MOVING_DOWN = false;
@@ -68,33 +71,20 @@ window.addEventListener('load', function (event) {
   initCanvas();
 });
 
-// DRAWING PACMAN GRID MAZE
-function drawGrid(rx, ry, w, h) {
-  for (var i = 0; i < rects.length; i++) {
-    ctx.strokeStyle = "#3DFFF8";
-    ctx.strokeRect(rects[i].rx, rects[i].ry, rects[i].w, rects[i].h);
-  }
-}
-
 // INITIALIZING CANVAS PROPERTIES
 function initCanvas () {
-  // mainGrid();
   pM();
-  drawINKY();
-  drawPINKY();
-  drawCLYDE();
-  drawBLINKY();
-  var movePMInterval = setInterval(pM, 5);
+  var movePMInterval = setInterval(pM, speed);
 }
 
 // PM FUNCTION
 function pM () {
   ctx.clearRect(0, 0, cW, cH);
   drawGrid();
-  drawINKY();
-  drawPINKY();
-  drawCLYDE();
-  drawBLINKY();
+  inky();
+  pinky();
+  clyde();
+  blinky();
 
   if (checkWin() === false) {
     if (checkBorder(pMAN[0], pMAN[1])) {
@@ -103,11 +93,12 @@ function pM () {
       pMAN[1] = y;
       eatFood();
       teleport(pMAN);
+      checkDeath();
       // }
     }
-  }
-  else {
+  } else {
     document.getElementById('winMusic').play();
+    GAMESTATUS = false;
     // gameOverNote();
   }
 
@@ -115,16 +106,40 @@ function pM () {
   drawPM(pMAN[0], pMAN[1]);
 }
 
+// GHOST FUNCTIONS & MOVEMENT
+function inky() {
+  drawINKY();
+}
+
+function pinky() {
+  drawPINKY();
+}
+
+function clyde() {
+  drawCLYDE();
+}
+
+function blinky() {
+  drawBLINKY();
+}
+
+// DRAWING PACMAN GRID MAZE
+function drawGrid(rx, ry, w, h) {
+  for (var i = 0; i < rects.length; i++) {
+    ctx.strokeStyle = "#3DFFF8";
+    ctx.strokeRect(rects[i].rx, rects[i].ry, rects[i].w, rects[i].h);
+  }
+}
+
 // DRAWING PACKMAN
 function drawPM() {
-  console.log("drawing | ", pMAN);
   ctx.save();
 
   // DRAWING HERE
   ctx.beginPath();
   ctx.fillStyle = "yellow";
   ctx.arc(pMAN[0], pMAN[1], 13, 0.25*Math.PI, 1.7*Math.PI);
-  ctx.lineTo(x-8,y);
+  ctx.lineTo(pMAN[0]-8, pMAN[1]);
   ctx.stroke();
   ctx.closePath();
   ctx.fill();
@@ -161,37 +176,6 @@ function drawPINKY () {
   ctx.drawImage(pinky, pinkyGHOST[0] + 5, pinkyGHOST[1] + 5, 30, 30);
 }
 
-// EATING FOOD
-function eatFood () {
-  for (var i = 0; i < map.length; i++) {
-    for(var k = 0; k< map[i].length; k++) {
-      if (Math.floor(pMAN[0]/40) ===  k && Math.floor(pMAN[1]/40) === i) {
-        console.log(k,i);
-        console.log("I'm eating food!");
-
-        if (map[i][k] === 0 || map[i][k] === 1) {
-          map[i][k] = 3;
-          document.getElementById('eatFootMusic').play()
-        }
-      }
-    }
-  }
-}
-
-// FORMING GRIDS & NAMING THEM IN ARRAY
-// function mainGrid() {
-//   for(var i = 0; i < cH; i += 40) {
-//     var arrayK = [];
-//     for(var k = 0; k < cW; k += 40) {
-//
-//       ctx.strokeRect(k, i, 40, 40);
-//       arrayK.push(0);
-//
-//     }
-//     cGRID.push(arrayK);
-//   }
-// }
-
 // DRAWING FOOD
 function drawFood() {
   for (var i = 0; i < map.length; i++) {
@@ -209,6 +193,33 @@ function drawFood() {
         ctx.arc((40*k) + 20, (40*i)+20, 6, 0, 2 * Math.PI);
         ctx.fill();
         ctx.closePath();
+      }
+    }
+  }
+}
+
+// CHECKING DEATH
+  function checkDeath() {
+    if (pMAN[0] === blinkyGHOST[0] && pMAN[1] === blinkyGHOST[1]) {
+      document.getElementById('loseMusic').play();
+    } else if (pMAN[0] === inkyGHOST[0] && pMAN[1] === inkyGHOST[1]) {
+      document.getElementById('loseMusic').play();
+    } else if (pMAN[0] === pinkyGHOST[0] && pMAN[1] === pinkyGHOST[1]) {
+      document.getElementById('loseMusic').play();
+    } else if (pMAN[0] === clydeGHOST[0] && pMAN[1] === clydeGHOST[1]) {
+      document.getElementById('loseMusic').play();
+    }
+  }
+
+// EATING FOOD
+function eatFood () {
+  for (var i = 0; i < map.length; i++) {
+    for(var k = 0; k< map[i].length; k++) {
+      if (Math.floor(pMAN[0]/40) ===  k && Math.floor(pMAN[1]/40) === i) {
+        if (map[i][k] === 0 || map[i][k] === 1) {
+          map[i][k] = 3;
+          document.getElementById('eatFootMusic').play()
+        }
       }
     }
   }
@@ -301,7 +312,6 @@ function checkRectCollide(ix, iy) {
   var collisionDistance = 15;
 
   for(var i = 0; i < rects.length; i++) {
-    var isHit = false;
     // CHECKING TOP COLLIDE
     if (MOVING_DOWN && iy === (rects[i].ry - collisionDistance)) {
       if (ix >= (rects[i].rx - collisionDistance) && ix <= (rects[i].rx + rects[i].w + collisionDistance)) {
@@ -350,3 +360,17 @@ function defaultMovements () {
   MOVING_LEFT = false;
   MOVING_RIGHT = false;
 }
+
+// FORMING GRIDS & NAMING THEM IN ARRAY
+// function mainGrid() {
+//   for(var i = 0; i < cH; i += 40) {
+//     var arrayK = [];
+//     for(var k = 0; k < cW; k += 40) {
+//
+//       ctx.strokeRect(k, i, 40, 40);
+//       arrayK.push(0);
+//
+//     }
+//     cGRID.push(arrayK);
+//   }
+// }
