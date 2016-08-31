@@ -35,6 +35,10 @@ var rects = [ {rx : 40,   ry : 40,  w : 120,  h : 80},
               {rx : 320,  ry : 600, w : 40,   h : 40},
               {rx : 360,  ry : 560, w : 40,   h : 80}];
 
+// rects = [
+//   {rx : 220,  ry : 300, w : 40,   h : 40}
+// ]
+
 var MOVING_UP = false;
 var MOVING_DOWN = false;
 var MOVING_LEFT = false;
@@ -52,7 +56,11 @@ window.addEventListener('load', function (event) {
 // DRAWING PACMAN GRID MAZE
 function drawGrid(rx, ry, w, h) {
   for (var i = 0; i < rects.length; i++) {
-    ctx.strokeStyle = "blue";
+    if (rects[i].isHit) {
+      ctx.strokeStyle = "red";
+    } else {
+      ctx.strokeStyle = "blue";
+    }
     ctx.strokeRect(rects[i].rx, rects[i].ry, rects[i].w, rects[i].h);
   }
 }
@@ -63,11 +71,13 @@ function initCanvas () {
   // pacman.src = 'pacman.png';
   function pM () {
     drawPM();
-    if (checkBorder() === true) {
-      // checkRectCollide();
+    if (checkBorder(pMAN[0], pMAN[1])) {
+      // if ( isPointInRects(pMAN[0], pMAN[1])) {
+      // if (checkRectCollide(pMAN[0],pMAN[1])) {
       moveIcons();
       pMAN[0] = x;
       pMAN[1] = y;
+      // }
     }
   }
   var movePMInterval = setInterval(pM, 10);
@@ -83,7 +93,7 @@ function drawPM() {
   ctx.beginPath();
   ctx.fillStyle = "yellow";
   // ctx.shadowcolour = 'rgba(0,0,0,0)';
-  ctx.arc(x, y, 15, 0.25*Math.PI, 1.7*Math.PI);
+  ctx.arc(x, y, 13, 0.25*Math.PI, 1.7*Math.PI);
   ctx.lineTo(x-8,y);
   ctx.stroke();
   ctx.closePath();
@@ -91,6 +101,12 @@ function drawPM() {
 
   // ctx.drawImage(pacman, x, y, 30, 30);
   // RESTORING
+
+  ctx.save();
+  ctx.fillStyle = "red";
+  ctx.fillRect(x, y, 1, 1);
+  ctx.restore();
+
   ctx.restore();
 }
 
@@ -109,7 +125,7 @@ for(var i = 0; i < cH; i += 40) {
 document.addEventListener('keydown', function (event) {
   var keyPress = event.keyCode;
   defaultMovements();
-  if (isPointInRects(pMAN[0],pMAN[1]) === false) {
+  // if (isPointInRects(pMAN[0],pMAN[1]) === false) {
     if (keyPress === 38) {
       MOVING_UP = true;
     } else if (keyPress === 40) {
@@ -119,24 +135,24 @@ document.addEventListener('keydown', function (event) {
     } else if (keyPress === 39) {
       MOVING_RIGHT = true;
     }
-  }
+  // }
 });
 
 // CHECKING BORDER
-function checkBorder () {
-  if(MOVING_DOWN && y === cH - 20) {
+function checkBorder (ix, iy) {
+  if(MOVING_DOWN && iy === cH - 20) {
     y = y;
     MOVING_DOWN = false;
   }
-  if (MOVING_UP && y === 20) {
+  if (MOVING_UP && iy === 20) {
     y = y
     MOVING_UP = false;
   }
-  if (MOVING_RIGHT && x === cW - 20) {
+  if (MOVING_RIGHT && ix === cW - 20) {
     x = x;
     MOVING_RIGHT = false;
   }
-  if (MOVING_LEFT && x === 20) {
+  if (MOVING_LEFT && ix === 20) {
     x = x
     MOVING_LEFT = false;
   }
@@ -145,54 +161,76 @@ function checkBorder () {
 
 // MOVING ICONS
 function moveIcons () {
+  var dx = 0;
+  var dy = 0;
   if (MOVING_DOWN) {
-    y++;
+    dy++;
   }
   if (MOVING_UP) {
-    y--;
+    dy--;
   }
   if (MOVING_LEFT) {
-    x--;
+    dx--;
   }
   if (MOVING_RIGHT) {
-    x++;
+    dx++;
+  }
+
+  // only actually set the new values of
+  // x and y if there was no collision.
+  if (checkRectCollide(x + dx, y + dy) === false) {
+    x = x + dx;
+    y = y + dy;
   }
 }
 
 // PREVENTING ICONS FROM ENTERING RECTANGLE
-// function checkRectCollide() {
-//   for(var i = 0; i < rects.length; i++) {
-//     // CHECKING TOP COLLIDE
-//     if (y === (rects[i].ry - 20)) {
-//       if (x >= (rects[i].rx - 20) && x <= (rects[i].rx + rects[i].w - 20)) {
-//         MOVING_DOWN = false;
-//         y = y;
-//       }
-//     }
-//     // CHECKING BOTTOM COLLIDE
-//     if (y === (rects[i].ry + rects[i].h + 20)) {
-//       if (x >= (rects[i].rx - 20) && x <= (rects[i].rx + rects[i].w + 20)) {
-//         MOVING_UP = false;
-//         y = y;
-//       }
-//     }
-//     // CHECKING LEFT COLLIDE
-//     if (x === (rects[i].rx - 20)) {
-//       if (y >= (rects[i].ry - 20) && x <= (rects[i].ry + rects[i].h - 20)) {
-//         MOVING_RIGHT = false;
-//         x = x;
-//       }
-//     }
-//     // CHECKING RIGHT COLLIDE
-//     if (x === (rects[i].rx + rects[i].w + 20)) {
-//       if (y >= (rects[i].ry - 20) && y <= (rects[i].ry + rects[i].h + 20)) {
-//         MOVING_LEFT = false;
-//         x = x;
-//       }
-//     }
-//   }
-//   return true;
-// }
+function checkRectCollide(ix, iy) {
+  var collisionDistance = 15;
+
+  for(var i = 0; i < rects.length; i++) {
+    var isHit = false;
+    // CHECKING TOP COLLIDE
+    if (MOVING_DOWN && iy === (rects[i].ry - collisionDistance)) {
+      if (ix >= (rects[i].rx - collisionDistance) && ix <= (rects[i].rx + rects[i].w + collisionDistance)) {
+        return true;
+        // MOVING_DOWN = false;
+        isHit = true;
+        // y = y;
+      }
+    }
+    // CHECKING BOTTOM COLLIDE
+    if (MOVING_UP && iy === (rects[i].ry + rects[i].h + collisionDistance)) {
+      if (ix >= (rects[i].rx - collisionDistance) && ix <= (rects[i].rx + rects[i].w + collisionDistance)) {
+        return true;
+        // MOVING_UP = false;
+        isHit = true;
+        // y = y;
+      }
+    }
+    // CHECKING LEFT COLLIDE
+    if (MOVING_RIGHT && ix === (rects[i].rx - collisionDistance)) {
+      if (iy >= (rects[i].ry - collisionDistance) && iy <= (rects[i].ry + rects[i].h + collisionDistance)) {
+        return true;
+        // MOVING_RIGHT = false;
+        isHit = true;
+        // x = x;
+      }
+    }
+    // CHECKING RIGHT COLLIDE
+    if (MOVING_LEFT && ix === (rects[i].rx + rects[i].w + collisionDistance)) {
+      if (iy >= (rects[i].ry - collisionDistance) && iy <= (rects[i].ry + rects[i].h + collisionDistance)) {
+        return true;
+        // MOVING_LEFT = false;
+        isHit = true;
+        // x = x;
+      }
+    }
+    rects[i].isHit = isHit;
+  }
+
+  return false;
+}
 
 // TO RESTRICT MOVEMENT OF PACMAN
 function defaultMovements () {
@@ -203,39 +241,31 @@ function defaultMovements () {
 }
 
 // CHECKING IF POINT IS IN RECTANGLE
-function isPointInRects(px, py) {
-  for (var i = 0; i < rects.length; i++) {
-    if (isInRect(rects[i].rx, rects[i].ry, rects[i].w, rects[i].h, px, py)) {
-      return true;
-    }
-  }
-  return false;
-}
-
-// RETURNING T/F IF POINT IS IN RECTANGLE
-function isInRect(rx, ry, w, h, px, py) {
-  if (px < (rx - 15)) {
-    x = x;
-    MOVING_RIGHT = false;
-    return false;
-  }
-  if (py < (ry - 15)) {
-    y = y;
-    MOVING_DOWN = false;
-    return false;
-  }
-  if (px > (rx + w + 15)) {
-    x = x;
-    MOVING_LEFT = false;
-    return false;
-  }
-  if (py > (ry + h + 15)) {
-    y = y;
-    MOVING_UP = false;
-    return false;
-  }
-  return true;
-}
+// function isPointInRects(px, py) {
+//   for (var i = 0; i < rects.length; i++) {
+//     if (isInRect(rects[i].rx, rects[i].ry, rects[i].w, rects[i].h, px, py)) {
+//       return true;
+//     }
+//   }
+//   return false;
+// }
+// //
+// // // RETURNING T/F IF POINT IS IN RECTANGLE
+// function isInRect(rx, ry, w, h, px, py) {
+//   if (MOVING_RIGHT && px < (rx - 20)) {
+//     return false;
+//   }
+//   if (MOVING_DOWN && py < (ry - 20)) {
+//     return false;
+//   }
+//   if (MOVING_LEFT && px > (rx + w + 20)) {
+//     return false;
+//   }
+//   if (MOVING_UP && py > (ry + h + 20)) {
+//     return false;
+//   }
+//   return true;
+// }
 
 // DRAWING THE MAZE
 // function maze() {
