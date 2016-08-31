@@ -1,11 +1,12 @@
 var x = 220;
 var y = 420;
 
-var pMAN    = [220, 420];
-var rGHOST  = [0, 0];
-var bGHOST  = [0, 0];
-var pGHOST  = [0, 0];
-var oGHOST  = [0, 0];
+var nextDir = 0;
+var pMAN          = [220, 420];
+var blinkyGHOST   = [160, 320];
+var inkyGHOST     = [200, 280];
+var pinkyGHOST    = [200, 320];
+var clydeGHOST    = [240, 320];
 var cGRID = [];
 var rects = [ {rx : 40,   ry : 40,  w : 120,  h : 80},
               {rx : 200,  ry : 0,   w : 40,   h : 120},
@@ -79,6 +80,10 @@ function drawGrid(rx, ry, w, h) {
 function initCanvas () {
   // mainGrid();
   pM();
+  drawINKY();
+  drawPINKY();
+  drawCLYDE();
+  drawBLINKY();
   var movePMInterval = setInterval(pM, 5);
 }
 
@@ -86,6 +91,10 @@ function initCanvas () {
 function pM () {
   ctx.clearRect(0, 0, cW, cH);
   drawGrid();
+  drawINKY();
+  drawPINKY();
+  drawCLYDE();
+  drawBLINKY();
 
   if (checkWin() === false) {
     if (checkBorder(pMAN[0], pMAN[1])) {
@@ -106,6 +115,7 @@ function pM () {
   drawPM(pMAN[0], pMAN[1]);
 }
 
+// DRAWING PACKMAN
 function drawPM() {
   ctx.save();
 
@@ -122,15 +132,45 @@ function drawPM() {
   ctx.restore();
 }
 
+// DRAWING INKY
+function drawINKY () {
+  var inky = new Image();
+  inky.src = "img/inky.png";
+  ctx.drawImage(inky, inkyGHOST[0] + 5, inkyGHOST[1] + 5, 30, 30);
+}
+
+// DRAWING CLYDE
+function drawCLYDE () {
+  var clyde = new Image();
+  clyde.src = "img/clyde.png";
+  ctx.drawImage(clyde, clydeGHOST[0] + 5, clydeGHOST[1] + 5, 30, 30);
+}
+
+// DRAWING BLINKY
+function drawBLINKY () {
+  var blinky = new Image();
+  blinky.src = "img/blinky.png";
+  ctx.drawImage(blinky, blinkyGHOST[0] + 5, blinkyGHOST[1] + 5, 30, 30);
+}
+
+// DRAWING PINKY
+function drawPINKY () {
+  var pinky = new Image();
+  pinky.src = "img/pinky.png";
+  ctx.drawImage(pinky, pinkyGHOST[0] + 5, pinkyGHOST[1] + 5, 30, 30);
+}
+
 // EATING FOOD
 function eatFood () {
   for (var i = 0; i < map.length; i++) {
     for(var k = 0; k< map[i].length; k++) {
       if (Math.floor(pMAN[0]/40) ===  k && Math.floor(pMAN[1]/40) === i) {
+        console.log(k,i);
         console.log("I'm eating food!");
-        map[i][k] = 3;
-        if (map[i][k]===3) {
-          document.getElementById('eatFootMusic').play();
+
+        if (map[i][k] === 0 || map[i][k] === 1) {
+          map[i][k] = 3;
+          document.getElementById('eatFootMusic').play()
         }
       }
     }
@@ -189,6 +229,22 @@ document.addEventListener('keydown', function (event) {
     }
   // }
 });
+
+// document.addEventListener('keyup', function (event) {
+//   var keyPress = event.keyCode;
+//   // defaultMovements();
+//   // if (isPointInRects(pMAN[0],pMAN[1]) === false) {
+//     if (keyPress === 38) {
+//       MOVING_UP = false;
+//     } else if (keyPress === 40) {
+//       MOVING_DOWN = false;
+//     } else if (keyPress === 37) {
+//       MOVING_LEFT = false;
+//     } else if (keyPress === 39) {
+//       MOVING_RIGHT = false;
+//     }
+  // }
+// });
 
 // TELEPORT FUNCTION
   // function teleport(ix, iy) {
