@@ -35,6 +35,23 @@ var rects = [ {rx : 40,   ry : 40,  w : 120,  h : 80},
               {rx : 320,  ry : 600, w : 40,   h : 40},
               {rx : 360,  ry : 560, w : 40,   h : 80}];
 
+var map = [   [0,0,0,0,0,2,0,0,0,0,0],
+              [1,2,2,2,0,2,0,2,2,2,1],
+              [0,2,2,2,0,2,0,2,2,2,0],
+              [0,0,0,0,0,0,0,0,0,0,0],
+              [0,2,2,0,2,2,2,0,2,2,0],
+              [0,2,2,0,2,2,2,0,2,2,0],
+              [0,0,0,0,0,0,0,0,0,0,0],
+              [2,2,0,2,2,5,2,2,0,2,2],
+              [0,0,0,2,5,5,5,2,0,0,0],
+              [2,2,0,2,2,2,2,2,0,2,2],
+              [2,2,0,0,0,0,0,0,0,2,2],
+              [0,0,0,2,2,0,2,2,0,0,0],
+              [0,2,0,0,0,0,0,0,0,2,0],
+              [0,0,0,2,2,0,2,2,0,0,0],
+              [1,2,0,0,2,0,2,0,0,2,1],
+              [0,2,2,0,2,0,2,0,2,2,0],
+              [0,0,0,0,0,0,0,0,0,0,0]];
 
 var MOVING_UP = false;
 var MOVING_DOWN = false;
@@ -53,24 +70,21 @@ window.addEventListener('load', function (event) {
 // DRAWING PACMAN GRID MAZE
 function drawGrid(rx, ry, w, h) {
   for (var i = 0; i < rects.length; i++) {
-    if (rects[i].isHit) {
-      ctx.strokeStyle = "red";
-    } else {
-      ctx.strokeStyle = "blue";
-    }
+    ctx.strokeStyle = "blue";
     ctx.strokeRect(rects[i].rx, rects[i].ry, rects[i].w, rects[i].h);
   }
 }
 
 // INITIALIZING CANVAS PROPERTIES
 function initCanvas () {
+  mainGrid();
   // var pacman = new Image();
   // pacman.src = 'pacman.png';
   function pM () {
     drawPM(pMAN[0], pMAN[1]);
     if (checkBorder(pMAN[0], pMAN[1])) {
       moveIcons();
-      teleport(pMAN[0], pMAN[1]);
+      // teleport(pMAN[0], pMAN[1]);
       pMAN[0] = x;
       pMAN[1] = y;
       // }
@@ -79,16 +93,17 @@ function initCanvas () {
   var movePMInterval = setInterval(pM, 10);
 }
 
-function drawPM(px, py) {
+function drawPM() {
   ctx.save();
   ctx.clearRect(0, 0, cW, cH);
 
   // DRAWING HERE
+  drawFood();
   drawGrid();
   ctx.beginPath();
   ctx.fillStyle = "yellow";
   // ctx.shadowcolour = 'rgba(0,0,0,0)';
-  ctx.arc(px, py, 13, 0.25*Math.PI, 1.7*Math.PI);
+  ctx.arc(pMAN[0], pMAN[1], 13, 0.25*Math.PI, 1.7*Math.PI);
   ctx.lineTo(x-8,y);
   ctx.stroke();
   ctx.closePath();
@@ -100,14 +115,39 @@ function drawPM(px, py) {
 }
 
 // FORMING GRIDS & NAMING THEM IN ARRAY
-for(var i = 0; i < cH; i += 40) {
-  var arrayK = [];
-  for(var k = 0; k < cW; k += 40) {
+function mainGrid() {
+  for(var i = 0; i < cH; i += 40) {
+    var arrayK = [];
+    for(var k = 0; k < cW; k += 40) {
 
-    ctx.strokeRect(k, i, 40, 40);
-    arrayK.push(0);
+      ctx.strokeRect(k, i, 40, 40);
+      arrayK.push(0);
+
+    }
+    cGRID.push(arrayK);
   }
-  cGRID.push(arrayK);
+}
+
+// DRAWING FOOD
+function drawFood() {
+  for (var i = 0; i < map.length; i++) {
+    for (var k = 0; k < map[i].length; k++) {
+      if (map[i][k] === 0) {
+        ctx.beginPath();
+        ctx.fillStyle = "white"
+        ctx.arc((40*k) + 20, (40*i)+20, 2, 0, 2 * Math.PI);
+        ctx.fill();
+        ctx.closePath();
+      }
+      if (map[i][k] === 1) {
+        ctx.beginPath();
+        ctx.fillStyle = "white"
+        ctx.arc((40*k) + 20, (40*i)+20, 6, 0, 2 * Math.PI);
+        ctx.fill();
+        ctx.closePath();
+      }
+    }
+  }
 }
 
 // LISTENING FOR KEYBOARD INPUTS
