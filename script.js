@@ -99,10 +99,10 @@ function pM () {
   if (checkWin() === false) {
     if (checkBorder(pMAN[0], pMAN[1])) {
       moveIcons();
-      eatFood();
-      // teleport(pMAN[0], pMAN[1]);
       pMAN[0] = x;
       pMAN[1] = y;
+      eatFood();
+      teleport(pMAN);
       // }
     }
   }
@@ -117,6 +117,7 @@ function pM () {
 
 // DRAWING PACKMAN
 function drawPM() {
+  console.log("drawing | ", pMAN);
   ctx.save();
 
   // DRAWING HERE
@@ -230,32 +231,24 @@ document.addEventListener('keydown', function (event) {
   // }
 });
 
-// document.addEventListener('keyup', function (event) {
-//   var keyPress = event.keyCode;
-//   // defaultMovements();
-//   // if (isPointInRects(pMAN[0],pMAN[1]) === false) {
-//     if (keyPress === 38) {
-//       MOVING_UP = false;
-//     } else if (keyPress === 40) {
-//       MOVING_DOWN = false;
-//     } else if (keyPress === 37) {
-//       MOVING_LEFT = false;
-//     } else if (keyPress === 39) {
-//       MOVING_RIGHT = false;
-//     }
-  // }
-// });
-
 // TELEPORT FUNCTION
-  // function teleport(ix, iy) {
-  //   if (ix === 20 && iy === 340) {
-  //
-  //     ix = 420;
-  //     iy = 340;
-  //     drawPM(420, 340)
-  //     x--
-  //   }
-  // }
+  function teleport(name) {
+    if (name[0] === 20) {
+      if (name[1] >= 336 && name[1] <= 344) {
+        name[0] = 420;
+        name[1] = 340;
+        x = 420;
+        y = 340;
+      }
+    } else if (name[0] === 420) {
+      if (name[1] >= 336 && name[1] <= 344) {
+        name[0] = 20;
+        name[1] = 340;
+        x = 20;
+        y = 340;
+      }
+    }
+  }
 
 // CHECKING BORDER
 function checkBorder (ix, iy) {
