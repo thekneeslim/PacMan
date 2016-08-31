@@ -53,17 +53,6 @@ var map = [   [0,0,0,0,0,2,0,0,0,0,0],
               [0,2,2,0,2,0,2,0,2,2,0],
               [0,0,0,0,0,0,0,0,0,0,0]];
 
-// EATING FOOD
-function eatFood () {
-  for (var i = 0; i < map.length; i++) {
-    for(var k = 0; k< map[i].length; k++) {
-      if (Math.floor(pMAN[0]/40) ===  k && Math.floor(pMAN[1]/40) === i) {
-        map[i][k] = 3;
-      }
-    }
-  }
-}
-
 var MOVING_UP = false;
 var MOVING_DOWN = false;
 var MOVING_LEFT = false;
@@ -89,41 +78,63 @@ function drawGrid(rx, ry, w, h) {
 // INITIALIZING CANVAS PROPERTIES
 function initCanvas () {
   // mainGrid();
-  // var pacman = new Image();
-  // pacman.src = 'pacman.png';
-  function pM () {
-    drawPM(pMAN[0], pMAN[1]);
+  pM();
+  var movePMInterval = setInterval(pM, 5);
+}
+
+// PM FUNCTION
+function pM () {
+  ctx.clearRect(0, 0, cW, cH);
+  drawGrid();
+
+  if (checkWin() === false) {
     if (checkBorder(pMAN[0], pMAN[1])) {
       moveIcons();
+      eatFood();
       // teleport(pMAN[0], pMAN[1]);
       pMAN[0] = x;
       pMAN[1] = y;
       // }
     }
   }
-  var movePMInterval = setInterval(pM, 10);
+  else {
+    document.getElementById('winMusic').play();
+    // gameOverNote();
+  }
+
+  drawFood();
+  drawPM(pMAN[0], pMAN[1]);
 }
 
 function drawPM() {
   ctx.save();
-  ctx.clearRect(0, 0, cW, cH);
 
   // DRAWING HERE
-  drawFood();
-  drawGrid();
-  eatFood();
   ctx.beginPath();
   ctx.fillStyle = "yellow";
-  // ctx.shadowcolour = 'rgba(0,0,0,0)';
   ctx.arc(pMAN[0], pMAN[1], 13, 0.25*Math.PI, 1.7*Math.PI);
   ctx.lineTo(x-8,y);
   ctx.stroke();
   ctx.closePath();
   ctx.fill();
 
-  // ctx.drawImage(pacman, x, y, 30, 30);
   // RESTORING
   ctx.restore();
+}
+
+// EATING FOOD
+function eatFood () {
+  for (var i = 0; i < map.length; i++) {
+    for(var k = 0; k< map[i].length; k++) {
+      if (Math.floor(pMAN[0]/40) ===  k && Math.floor(pMAN[1]/40) === i) {
+        console.log("I'm eating food!");
+        map[i][k] = 3;
+        if (map[i][k]===3) {
+          document.getElementById('eatFootMusic').play();
+        }
+      }
+    }
+  }
 }
 
 // FORMING GRIDS & NAMING THEM IN ARRAY
@@ -182,6 +193,7 @@ document.addEventListener('keydown', function (event) {
 // TELEPORT FUNCTION
   // function teleport(ix, iy) {
   //   if (ix === 20 && iy === 340) {
+  //
   //     ix = 420;
   //     iy = 340;
   //     drawPM(420, 340)
@@ -263,18 +275,24 @@ function checkRectCollide(ix, iy) {
     if (MOVING_LEFT && ix === (rects[i].rx + rects[i].w + collisionDistance)) {
       if (iy >= (rects[i].ry - collisionDistance) && iy <= (rects[i].ry + rects[i].h + collisionDistance)) {
         return true;
-        // MOVING_LEFT = false;
-        isHit = true;
-        // x = x;
       }
     }
-    rects[i].isHit = isHit;
   }
 
   return false;
 }
 
-
+// CHECK WIN FUNCTION
+  function checkWin() {
+    for (var i = 0; i < map.length; i++) {
+      for(var k = 0; k < map[i].length; k++) {
+        if(map[i][k] === 0) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
 
 // TO RESTRICT MOVEMENT OF PACMAN
 function defaultMovements () {
