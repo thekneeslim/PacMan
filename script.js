@@ -1,5 +1,6 @@
 var speed = 5
 var GHOST_SPEED = 1;
+var buffer = 20;
 
 var GAMESTATUS = true
 var PILLACTIVE = false
@@ -41,30 +42,40 @@ var rects = [ {rx: 40,   ry: 40,  w: 120,  h: 80},
 ]
 
 var decisionPoints = [
-  {rx: 0,    ry: 120, w: 40,   h: 40},
-  {rx: 120,  ry: 120, w: 40,   h: 40},
-  {rx: 160,  ry: 120, w: 40,   h: 40},
-  {rx: 200,  ry: 120, w: 40,   h: 40},
-  {rx: 280,  ry: 120, w: 40,   h: 40},
-  {rx: 120,  ry: 240, w: 40,   h: 40},
-  {rx: 280,  ry: 240, w: 40,   h: 40},
-  {rx: 80,   ry: 320, w: 40,   h: 40},
-  {rx: 320,  ry: 320, w: 40,   h: 40},
-  {rx: 280,  ry: 400, w: 40,   h: 40},
-  {rx: 200,  ry: 400, w: 40,   h: 40},
-  {rx: 320,  ry: 400, w: 40,   h: 40},
-  {rx: 80,   ry: 440, w: 40,   h: 40},
-  {rx: 320,  ry: 440, w: 40,   h: 40},
-  {rx: 80,   ry: 480, w: 40,   h: 40},
-  {rx: 400,  ry: 480, w: 40,   h: 40},
-  {rx: 320,  ry: 480, w: 40,   h: 40},
-  {rx: 0,    ry: 520, w: 40,   h: 40},
-  {rx: 80,   ry: 520, w: 40,   h: 40},
-  {rx: 320,  ry: 520, w: 40,   h: 40},
-  {rx: 400,  ry: 520, w: 40,   h: 40},
-  {rx: 120,  ry: 640, w: 40,   h: 40},
-  {rx: 200,  ry: 640, w: 40,   h: 40},
-  {rx: 280,  ry: 640, w: 40,   h: 40}
+  {rx: 0,   ry: 120, w: 0,   h: 0},
+  {rx: 120, ry: 120, w: 0,   h: 0},
+  {rx: 160, ry: 120, w: 0,   h: 0},
+  {rx: 200, ry: 120, w: 0,   h: 0},
+  {rx: 240, ry: 120, w: 0,   h: 0},
+  {rx: 280, ry: 120, w: 0,   h: 0},
+  {rx: 400, ry: 120, w: 0,   h: 0},
+
+  {rx: 80,  ry: 240, w: 0,   h: 0},
+  {rx: 120, ry: 240, w: 0,   h: 0},
+  {rx: 280, ry: 240, w: 0,   h: 0},
+  {rx: 320, ry: 240, w: 0,   h: 0},
+
+  {rx: 80,  ry: 320, w: 0,   h: 0},
+  {rx: 320, ry: 320, w: 0,   h: 0},
+
+  {rx: 80,  ry: 400, w: 0,   h: 0},
+  {rx: 200, ry: 400, w: 0,   h: 0},
+  {rx: 320, ry: 400, w: 0,   h: 0},
+
+  {rx: 80,  ry: 440, w: 0,   h: 0},
+  {rx: 320, ry: 440, w: 0,   h: 0},
+
+  {rx: 80,  ry: 480, w: 0,   h: 0},
+  {rx: 200, ry: 480, w: 0,   h: 0},
+  {rx: 320, ry: 480, w: 0,   h: 0},
+
+  {rx: 0,   ry: 520, w: 0,   h: 0},
+  {rx: 80,  ry: 520, w: 0,   h: 0},
+  {rx: 320, ry: 520, w: 0,   h: 0},
+  {rx: 400, ry: 520, w: 0,   h: 0},
+
+  {rx: 120, ry: 640, w: 0,   h: 0},
+  {rx: 200, ry: 640, w: 0,   h: 0},
 ]
 
 var map = [   [0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0],
@@ -190,7 +201,7 @@ function drawINKY () {
     inky.src = 'img/undead.gif'
   }
   ctx.beginPath()
-  ctx.drawImage(inky, inkyGHOST.x - 15, inkyGHOST.y - 15, 30, 30)
+  ctx.drawImage(inky, inkyGHOST.x - 20, inkyGHOST.y - 20, 40, 40)
   ctx.closePath()
 }
 
@@ -468,7 +479,7 @@ function checkRectCollide(ix, iy) {
 }
 
 function checkDecisionCollide(ix, iy) {
-  return checkCollide(decisionPoints, ix, iy, 0);
+  return checkCollide(decisionPoints, ix + 20, iy + 20, 0);
 }
 
 function checkCollide(collection, ix, iy, dis) {
