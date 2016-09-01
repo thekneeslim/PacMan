@@ -147,6 +147,7 @@ function startGAME () {
 
 // INITIALIZING CANVAS PROPERTIES
 function initCanvas () {
+  document.getElementById('background').play();
   document.getElementById("box1").style.color = "black";
   document.getElementById("box2").style.color = "black";
   document.getElementById("box3").style.color = "black";
@@ -166,6 +167,7 @@ function pM () {
     if (checkWin() === false) {
       if (pmCheckDeath() === false) {
         if (checkBorder(pMAN)) {
+          document.getElementById('background').play();
           moveIcons(pMAN);
           inky();
           clyde();
@@ -176,9 +178,10 @@ function pM () {
         }
       }
     } else {
-      document.getElementById('winMusic').play()
+      document.getElementById('background').pause();
       document.getElementById("box7").style.color = "black";
       document.getElementById("box10").style.color = "white";
+      document.getElementById('winMusic').play()
       GAMESTATUS = false
     // gameOverNote()
     }
@@ -373,6 +376,7 @@ function checkingDeath () {
   }
   if (m > 0) {
     GAMESTATUS = false
+    document.getElementById('background').pause();
     document.getElementById("box7").style.color = "black";
     document.getElementById("box4").style.color = "white";
     setTimeout( function() {
