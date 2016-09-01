@@ -1,13 +1,14 @@
 var speed = 5;
 
 var GAMESTATUS = true;
+var PILLACTIVE = false;
 
-var ghosts        = [];
 var pMAN          = [220, 420];
-var blinkyGHOST   = [160, 320];
-var inkyGHOST     = [200, 280];
-var pinkyGHOST    = [200, 320];
-var clydeGHOST    = [240, 320];
+var blinkyGHOST   = [180, 340];
+var inkyGHOST     = [220, 300];
+var pinkyGHOST    = [220, 340];
+var clydeGHOST    = [260, 340];
+var ghosts        = [blinkyGHOST, inkyGHOST, pinkyGHOST, clydeGHOST];
 
 var rects = [ {rx : 40,   ry : 40,  w : 120,  h : 80},
               {rx : 200,  ry : 0,   w : 40,   h : 120},
@@ -71,34 +72,27 @@ window.addEventListener('load', function (event) {
 
 // INITIALIZING CANVAS PROPERTIES
 function initCanvas () {
+  ghostMove(inkyGHOST);
   pM();
   var movePMInterval = setInterval(pM, speed);
-}
-
-// PUSHING ALL GHOSTS COORDINATES INTO AN ARRAY
-function ghostArray() {
-  ghosts.push(blinkyGHOST);
-  ghosts.push(inkyGHOST);
-  ghosts.push(pinkyGHOST);
-  ghosts.push(clydeGHOST);
 }
 
 // PM FUNCTION
 function pM () {
   ctx.clearRect(0, 0, cW, cH);
   drawGrid();
-  inky();
-  pinky();
-  clyde();
-  blinky();
+
 
   if (checkWin() === false) {
-    if (checkBorder(pMAN)) {
-      moveIcons(pMAN);
-      eatFood();
-      teleport(pMAN);
-      checkDeath();
-      // }
+    if (checkDeath() === false) {
+      if (checkBorder(pMAN)) {
+        moveIcons(pMAN);
+        inky();
+        eatFood();
+        teleport(pMAN);
+        checkDeath();
+      }
+
     }
   } else {
     document.getElementById('winMusic').play();
@@ -108,22 +102,32 @@ function pM () {
 
   drawFood();
   drawPM(pMAN[0], pMAN[1]);
+  inky(inkyGHOST[0], inkyGHOST[1]);
+  // pinky(pinkyGHOST[0], pinkyGHOST[1]);
+  // clyde(clydeGHOST[0], clydeGHOST[1]);
+  // blinky(blinkyGHOST[0], blinkyGHOST[1]);
 }
 
 // GHOST FUNCTIONS & MOVEMENT
 function inky() {
+  if (checkRectCollide(inkyGHOST[0], inkyGHOST[1]) === true) {
+    ghostMove(inkyGHOST);
+  }
   drawINKY();
 }
 
 function pinky() {
+  // ghostMove(pinkyGHOST)
   drawPINKY();
 }
 
 function clyde() {
+  // ghostMove(clydeGHOST);
   drawCLYDE();
 }
 
 function blinky() {
+  // ghostMove(blinkyGHOST);
   drawBLINKY();
 }
 
@@ -155,29 +159,53 @@ function drawPM() {
 // DRAWING INKY
 function drawINKY () {
   var inky = new Image();
-  inky.src = "img/inky.png";
-  ctx.drawImage(inky, inkyGHOST[0] + 5, inkyGHOST[1] + 5, 30, 30);
+  if (PILLACTIVE === false) {
+    inky.src = "img/inky.png";
+  } else if (PILLACTIVE === true) {
+    pinky.src = "img/undead.gif";
+  }
+  ctx.beginPath();
+  ctx.drawImage(inky, inkyGHOST[0] - 15, inkyGHOST[1] - 15, 30, 30);
+  ctx.closePath();
 }
 
 // DRAWING CLYDE
 function drawCLYDE () {
   var clyde = new Image();
-  clyde.src = "img/clyde.png";
-  ctx.drawImage(clyde, clydeGHOST[0] + 5, clydeGHOST[1] + 5, 30, 30);
+  if (PILLACTIVE === false) {
+    clyde.src = "img/clyde.png";
+  } else if (PILLACTIVE === true) {
+    pinky.src = "img/undead.gif";
+  }
+  ctx.beginPath();
+  ctx.drawImage(clyde, clydeGHOST[0] - 15, clydeGHOST[1] -15 , 30, 30);
+  ctx.closePath();
 }
 
 // DRAWING BLINKY
 function drawBLINKY () {
   var blinky = new Image();
-  blinky.src = "img/blinky.png";
-  ctx.drawImage(blinky, blinkyGHOST[0] + 5, blinkyGHOST[1] + 5, 30, 30);
+  if (PILLACTIVE === false) {
+    blinky.src = "img/blinky.png";
+  } else if (PILLACTIVE === true) {
+    pinky.src = "img/undead.gif";
+  }
+  ctx.beginPath();
+  ctx.drawImage(blinky, blinkyGHOST[0] - 15, blinkyGHOST[1] - 15, 30, 30);
+  ctx.closePath();
 }
 
 // DRAWING PINKY
 function drawPINKY () {
   var pinky = new Image();
-  pinky.src = "img/pinky.png";
-  ctx.drawImage(pinky, pinkyGHOST[0] + 5, pinkyGHOST[1] + 5, 30, 30);
+  if (PILLACTIVE === false) {
+    pinky.src = "img/pinky.png";
+  } else if (PILLACTIVE === true) {
+    pinky.src = "img/undead.gif";
+  }
+  ctx.beginPath();
+  ctx.drawImage(pinky, pinkyGHOST[0] - 15, pinkyGHOST[1] - 15, 30, 30);
+  ctx.closePath();
 }
 
 // DRAWING FOOD
@@ -204,42 +232,65 @@ function drawFood() {
 
 // CHECKING DEATH
   function checkDeath() {
-    ghostArray();
-
-    for(var i = 0; i < ghosts.length; i++) {
+    var m = 0;
+    var g;
+    for (var i = 0; i < ghosts.length; i++) {
       // CHECKING TOP COLLIDE
       if (pMAN[0] === ghosts[i][0]) {
         if(pMAN[1] >= ghosts[i][1] && pMAN[1] <= (ghosts[i][1] + 30)) {
-          GAMESTATUS = false;
-          document.getElementById('loseMusic').play();
-          return true;
+          if (PILLACTIVE === false) {
+            m = m + 1;
+          } else if (PILLACTUVE === true) {
+            m = m - 1
+            g = ghosts[i];
+          }
         }
       }
       // CHECKING BOTTOM COLLIDE
       if (pMAN[0] === (ghosts[i][0] + 30)) {
         if(pMAN[1] >= ghosts[i][1] && pMAN[1] <= (ghosts[i][1] + 30)) {
-          GAMESTATUS = false;
-          document.getElementById('loseMusic').play();
-          return true;
+          if (PILLACTIVE === false) {
+            m = m + 1;
+          } else if (PILLACTUVE === true) {
+            m = m - 1
+            g = ghosts[i];
+          }
         }
       }
       // CHECKING LEFT COLLIDE
       if (pMAN[1] === ghosts[i][1]) {
         if(pMAN[0] >= ghosts[i][0] && pMAN[0] <= (ghosts[i][0] + 30)) {
-          GAMESTATUS = false;
-          document.getElementById('loseMusic').play();
-          return true;
+          if (PILLACTIVE === false) {
+            m = m + 1;
+          } else if (PILLACTUVE === true) {
+            m = m - 1
+            g = ghosts[i];
+          }
         }
       }
       // CHECKING RIGHT COLLIDE
       if (pMAN[1] === (ghosts[i][1] + 30)) {
         if(pMAN[0] >= ghosts[i][0] && pMAN[0] <= (ghosts[i][0] + 30)) {
-          GAMESTATUS = false;
-          document.getElementById('loseMusic').play();
-          return true;
+          if (PILLACTIVE === false) {
+            m = m + 1;
+          } else if (PILLACTIVE === true) {
+            m = m - 1
+            g = ghosts[i];
+          }
         }
       }
     }
+    if (m > 0) {
+      GAMESTATUS = false;
+      document.getElementById('loseMusic').play();
+      return true;
+    }
+    if (m < 0) {
+
+      document.getElementById('eatghost').play();
+      return false;
+    }
+    return false;
   }
 
 // EATING FOOD
@@ -247,9 +298,13 @@ function eatFood () {
   for (var i = 0; i < map.length; i++) {
     for(var k = 0; k< map[i].length; k++) {
       if (Math.floor(pMAN[0]/40) ===  k && Math.floor(pMAN[1]/40) === i) {
-        if (map[i][k] === 0 || map[i][k] === 1) {
+        if (map[i][k] === 0) {
           map[i][k] = 3;
           document.getElementById('eatFootMusic').play()
+        }
+        if (map[i][k] === 1) {
+          map[i][k] = 4;
+          document.getElementById('siren').play()
         }
       }
     }
@@ -260,7 +315,6 @@ function eatFood () {
 document.addEventListener('keydown', function (event) {
   var keyPress = event.keyCode;
   defaultMovements();
-  // if (isPointInRects(pMAN[0],pMAN[1]) === false) {
     if (keyPress === 38) {
       MOVING_UP = true;
     } else if (keyPress === 40) {
@@ -270,7 +324,6 @@ document.addEventListener('keydown', function (event) {
     } else if (keyPress === 39) {
       MOVING_RIGHT = true;
     }
-  // }
 });
 
 // TELEPORT FUNCTION
@@ -313,6 +366,32 @@ function checkBorder (name) {
   return true;
 }
 
+// MOVING GHOSTS
+  function ghostMove(name) {
+    var gRoute = Math.random();
+    console.log(gRoute);
+    var dx = 0;
+    var dy = 0;
+
+    if (gRoute < 0.25) {
+      dy++;
+    } else if (gRoute < 0.5) {
+      dy--;
+    } else if (gRoute < 0.75) {
+      dx--;
+    } else {
+      dx++;
+    }
+    if (checkRectCollide(name[0] + dx, name[1] + dy) === true) {
+      name[0] = name[0];
+      name[1] = name[1];
+      ghostMove(name);
+    } else if (checkRectCollide(name[0] + dx, name[1] + dy) === false) {
+      name[0] = name[0] + dx;
+      name[1] = name[1] + dy;
+    }
+  }
+
 // MOVING ICONS
 function moveIcons (name) {
   var dx = 0;
@@ -344,25 +423,25 @@ function checkRectCollide(ix, iy) {
 
   for(var i = 0; i < rects.length; i++) {
     // CHECKING TOP COLLIDE
-    if (MOVING_DOWN && iy === (rects[i].ry - collisionDistance)) {
+    if (iy === (rects[i].ry - collisionDistance)) {
       if (ix >= (rects[i].rx - collisionDistance) && ix <= (rects[i].rx + rects[i].w + collisionDistance)) {
         return true;
       }
     }
     // CHECKING BOTTOM COLLIDE
-    if (MOVING_UP && iy === (rects[i].ry + rects[i].h + collisionDistance)) {
+    if (iy === (rects[i].ry + rects[i].h + collisionDistance)) {
       if (ix >= (rects[i].rx - collisionDistance) && ix <= (rects[i].rx + rects[i].w + collisionDistance)) {
         return true;
       }
     }
     // CHECKING LEFT COLLIDE
-    if (MOVING_RIGHT && ix === (rects[i].rx - collisionDistance)) {
+    if (ix === (rects[i].rx - collisionDistance)) {
       if (iy >= (rects[i].ry - collisionDistance) && iy <= (rects[i].ry + rects[i].h + collisionDistance)) {
         return true;
       }
     }
     // CHECKING RIGHT COLLIDE
-    if (MOVING_LEFT && ix === (rects[i].rx + rects[i].w + collisionDistance)) {
+    if (ix === (rects[i].rx + rects[i].w + collisionDistance)) {
       if (iy >= (rects[i].ry - collisionDistance) && iy <= (rects[i].ry + rects[i].h + collisionDistance)) {
         return true;
       }
@@ -390,4 +469,23 @@ function defaultMovements () {
   MOVING_DOWN = false;
   MOVING_LEFT = false;
   MOVING_RIGHT = false;
+}
+
+// RESTARTING GRID
+function restartGame() {
+  for (var i = 0; i < map.length; i++) {
+    for (var k = 0; k < map[i].length; k++) {
+      if (map[i][k] === 3) {
+        map[i][k] = 0;
+      }
+      if (map[i][k] === 4) {
+        map[i][k] = 1;
+      }
+    }
+  }
+  pMAN          = [220, 420];
+  blinkyGHOST   = [160, 320];
+  inkyGHOST     = [200, 280];
+  pinkyGHOST    = [200, 320];
+  clydeGHOST    = [240, 320];
 }
