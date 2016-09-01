@@ -4,6 +4,7 @@ var buffer = 20;
 
 var GAMESTATUS = true
 var PILLACTIVE = false
+var movePMInterval;
 
 var pMAN = [220, 420]
 var blinkyGHOST = {x: 180, y: 340, dx: GHOST_SPEED, dy: 0};
@@ -56,6 +57,7 @@ var decisionPoints = [
   {rx: 320, ry: 240, w: 0,   h: 0},
 
   {rx: 80,  ry: 320, w: 0,   h: 0},
+  {rx: 200,  ry: 320, w: 0,   h: 0},
   {rx: 320, ry: 320, w: 0,   h: 0},
 
   {rx: 80,  ry: 400, w: 0,   h: 0},
@@ -121,22 +123,38 @@ document.addEventListener('keydown', function (event) {
   }
 })
 
-//  GAME START CONTROL
-window.addEventListener('load', function (event) {
-  document.getElementById('startMusic').play()
-  setTimeout (startingGame, 4000);
-})
+// RESTARTING GAMESTATUS
+document.getElementById("bton").addEventListener('click', restartGame);
 
-function startingGame() {
-  document.getElementById('startGame').style.zIndex = "-1";
-  initCanvas();
+//  GAME START CONTROL
+window.addEventListener('load', startGAME());
+
+// STARTING GAMESTART
+function startGAME () {
+  document.getElementById('startMusic').play();
+  time2 = setTimeout (initCanvas, 4000);
+  document.getElementById("box1").style.color = "white";
+  setTimeout(function() {
+    document.getElementById("box2").style.color = "white";
+  }, 1000)
+  setTimeout(function() {
+    document.getElementById("box3").style.color = "white";
+  }, 2000)
+  setTimeout(function() {
+    document.getElementById("box3.5").style.color = "white";
+  }, 3000)
 }
 
 // INITIALIZING CANVAS PROPERTIES
 function initCanvas () {
+  document.getElementById("box1").style.color = "black";
+  document.getElementById("box2").style.color = "black";
+  document.getElementById("box3").style.color = "black";
+  document.getElementById("box3.5").style.color = "black";
+  document.getElementById("box7").style.color = "white";
   ghostMove(inkyGHOST)
   pM()
-  var movePMInterval = setInterval(pM, speed)
+  movePMInterval = setInterval(pM, speed)
 }
 
 // PM FUNCTION
@@ -159,6 +177,8 @@ function pM () {
       }
     } else {
       document.getElementById('winMusic').play()
+      document.getElementById("box7").style.color = "black";
+      document.getElementById("box10").style.color = "white";
       GAMESTATUS = false
     // gameOverNote()
     }
@@ -353,8 +373,11 @@ function checkingDeath () {
   }
   if (m > 0) {
     GAMESTATUS = false
+    document.getElementById("box7").style.color = "black";
+    document.getElementById("box4").style.color = "white";
+    setTimeout( function() {
+      document.getElementById("box5").style.color = "white"}, 1000);
     document.getElementById('loseMusic').play()
-    document.getElementById('death').style.zIndex = "1";
     return true
   }
   if (m < 0) {
@@ -376,7 +399,7 @@ function eatFood () {
         if (map[i][k] === 1) {
           map[i][k] = 4
           PILLACTIVE = true;
-          setTimeout(changePillStatus, 8000);
+          time = setTimeout(changePillStatus, 8000);
         }
       }
     }
@@ -562,9 +585,17 @@ function restartGame () {
     }
   }
   pMAN        = [220, 420]
-  blinkyGHOST = [160, 320]
-  inkyGHOST   = [200, 280]
-  pinkyGHOST  = [200, 320]
-  clydeGHOST  = [240, 320]
-  initCanvas();
+  blinkyGHOST = {x: 180, y: 340, dx: GHOST_SPEED, dy: 0};
+  inkyGHOST   = {x: 220, y:300, dx: 0, dy: -GHOST_SPEED};
+  pinkyGHOST  = {x: 220, y: 340, dx: -GHOST_SPEED, dy: 0};
+  clydeGHOST  = {x: 260, y: 340, dx: GHOST_SPEED, dy: 0};
+  defaultMovements();
+  PILLACTIVE = false;
+  GAMESTATUS = true;
+  clearInterval(movePMInterval);
+  document.getElementById("box4").style.color = "black";
+  document.getElementById("box5").style.color = "black";
+  document.getElementById("box7").style.color = "black";
+  document.getElementById("box10").style.color = "black";
+  startGAME();
 }

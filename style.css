@@ -18,7 +18,6 @@ img {
   width: 1000px;
   height: 680px;
   margin: 0 auto;
-  background-color: red;
 }
 
 #gCanvas {
@@ -27,7 +26,7 @@ img {
   position: relative;
 }
 
-.note {
+.left {
   width: 200px;
   height: 600px;
   text-align: center;
@@ -36,7 +35,8 @@ img {
 }
 
 .words {
-margin: 30px 10px;
+margin: 20px 10px;
+color: black
 }
 
 #right {
@@ -44,8 +44,9 @@ margin: 30px 10px;
   height: 600px;
   text-align: center;
   position: absolute;
-  background-color: orange;
   margin: 0;
+  display: inline-block;
+  padding: 40px;
 }
 
 #pman {
@@ -64,4 +65,5 @@ button {
   background-color: black;
   border: 1px white solid;
   color: white;
+  margin: 50px 0;
 }
