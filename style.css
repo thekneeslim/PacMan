@@ -2,14 +2,6 @@ body {
   background-color: black;
 }
 
-/*.gBOX {
-  color: orange;
-  font-size: 40px;
-  display: inline-block;
-  width: 40px;
-  height: 40px;
-}*/
-
 #gCanvas {
   background-color: black;
   border: 1px solid white;

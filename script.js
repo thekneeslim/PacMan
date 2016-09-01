@@ -6,7 +6,7 @@ var PILLACTIVE = false
 
 var pMAN = [220, 420]
 var blinkyGHOST = {x: 180, y: 340, dx: GHOST_SPEED, dy: 0};
-var inkyGHOST = {x: 220, y:300, dx: 0, dy: GHOST_SPEED};
+var inkyGHOST = {x: 220, y:300, dx: 0, dy: -GHOST_SPEED};
 var pinkyGHOST = {x: 220, y: 340, dx: -GHOST_SPEED, dy: 0};
 var clydeGHOST = {x: 260, y: 340, dx: GHOST_SPEED, dy: 0};
 var ghosts = [blinkyGHOST, inkyGHOST, pinkyGHOST, clydeGHOST]
@@ -117,6 +117,9 @@ function pM () {
         if (checkBorder(pMAN)) {
           moveIcons(pMAN);
           inky();
+          // clyde();
+          // blinky();
+          // pinky();
           eatFood();
           teleport(pMAN);
         }
@@ -130,10 +133,6 @@ function pM () {
 
   drawFood()
   drawPM(pMAN[0], pMAN[1]);
-  // inky(inkyGHOST[0], inkyGHOST[1]);
-  // pinky(pinkyGHOST[0], pinkyGHOST[1]);
-  // clyde(clydeGHOST[0], clydeGHOST[1]);
-  // blinky(blinkyGHOST[0], blinkyGHOST[1]);
 }
 
 // GHOST FUNCTIONS & MOVEMENT
@@ -143,17 +142,17 @@ function inky () {
 }
 
 function pinky () {
-  // ghostMove(pinkyGHOST)
+  ghostMove(pinkyGHOST)
   drawPINKY()
 }
 
 function clyde () {
-  // ghostMove(clydeGHOST)
+  ghostMove(clydeGHOST)
   drawCLYDE()
 }
 
 function blinky () {
-  // ghostMove(blinkyGHOST)
+  ghostMove(blinkyGHOST)
   drawBLINKY()
 }
 
@@ -188,7 +187,7 @@ function drawINKY () {
   if (PILLACTIVE === false) {
     inky.src = 'img/inky.png'
   } else if (PILLACTIVE === true) {
-    pinky.src = 'img/undead.gif'
+    inky.src = 'img/undead.gif'
   }
   ctx.beginPath()
   ctx.drawImage(inky, inkyGHOST.x - 15, inkyGHOST.y - 15, 30, 30)
@@ -201,7 +200,7 @@ function drawCLYDE () {
   if (PILLACTIVE === false) {
     clyde.src = 'img/clyde.png'
   } else if (PILLACTIVE === true) {
-    pinky.src = 'img/undead.gif'
+    clyde.src = 'img/undead.gif'
   }
   ctx.beginPath()
   ctx.drawImage(clyde, clydeGHOST.x - 15, clydeGHOST.y - 15 , 30, 30)
@@ -214,7 +213,7 @@ function drawBLINKY () {
   if (PILLACTIVE === false) {
     blinky.src = 'img/blinky.png'
   } else if (PILLACTIVE === true) {
-    pinky.src = 'img/undead.gif'
+    blinky.src = 'img/undead.gif'
   }
   ctx.beginPath()
   ctx.drawImage(blinky, blinkyGHOST.x - 15, blinkyGHOST.y - 15, 30, 30)
@@ -330,7 +329,7 @@ function eatFood () {
         if (map[i][k] === 1) {
           map[i][k] = 4
           PILLACTIVE = true;
-          pillActiveMode();
+          // pillActiveMode();
         }
       }
     }
@@ -338,11 +337,11 @@ function eatFood () {
 }
 
 // PILL ACTIVE FUNCTION
-function pillActiveMode() {
-  for(var i = 0; i < 4; i++){
-    document.getElementById('siren').play();
-  }
-}
+// function pillActiveMode() {
+//   for(var i = 0; i < 4; i++){
+//     document.getElementById('siren').play();
+//   }
+// }
 
 // LISTENING FOR KEYBOARD INPUTS
 document.addEventListener('keydown', function (event) {
@@ -401,7 +400,7 @@ function checkBorder (name) {
 
 // MOVING GHOSTS
 function ghostMove (name) {
-  if (checkDecisionCollide(name.x + name.dx, name.y + name.dy) === true) {
+  if (checkDecisionCollide(name.x, name.y) === true) {
     pickNewDirection(name);
   } else if (checkRectCollide(name.x + name.dx, name.y + name.dy) === false) {
     name.x += name.dx
@@ -412,8 +411,7 @@ function ghostMove (name) {
 }
 
 function pickNewDirection(name) {
-  var gRoute = Math.random()
-  console.log(gRoute)
+  var gRoute = Math.random();
   var dx = 0
   var dy = 0
 
@@ -466,15 +464,15 @@ function checkRectCollide(ix, iy) {
   } else if (iy > 680 - 20) {
     return true;
   }
-  return checkCollide(rects, ix, iy);
+  return checkCollide(rects, ix, iy, 15);
 }
 
 function checkDecisionCollide(ix, iy) {
-  return checkCollide(decisionPoints, ix, iy);
+  return checkCollide(decisionPoints, ix, iy, 0);
 }
 
-function checkCollide(collection, ix, iy) {
-  var collisionDistance = 15
+function checkCollide(collection, ix, iy, dis) {
+  var collisionDistance = dis;
 
   for (var i = 0; i < collection.length; i++) {
     // CHECKING TOP COLLIDE
@@ -537,9 +535,9 @@ function restartGame () {
       }
     }
   }
-  pMAN = [220, 420]
+  pMAN        = [220, 420]
   blinkyGHOST = [160, 320]
-  inkyGHOST = [200, 280]
-  pinkyGHOST = [200, 320]
-  clydeGHOST = [240, 320]
+  inkyGHOST   = [200, 280]
+  pinkyGHOST  = [200, 320]
+  clydeGHOST  = [240, 320]
 }
