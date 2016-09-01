@@ -57,7 +57,7 @@ var decisionPoints = [
   {rx: 320, ry: 240, w: 0,   h: 0},
 
   {rx: 80,  ry: 320, w: 0,   h: 0},
-  {rx: 200,  ry: 320, w: 0,   h: 0},
+  {rx: 200, ry: 320, w: 0,   h: 0},
   {rx: 320, ry: 320, w: 0,   h: 0},
 
   {rx: 80,  ry: 400, w: 0,   h: 0},
@@ -456,7 +456,7 @@ function checkBorder (name) {
 
 // MOVING GHOSTS
 function ghostMove (name) {
-  if (checkDecisionCollide(name.x, name.y) === true) {
+  if (checkDecisionCollide(name.x + 20, name.y + 20) === true) {
     pickNewDirection(name);
   } else if (checkRectCollide(name.x + name.dx, name.y + name.dy) === false) {
     name.x += name.dx
