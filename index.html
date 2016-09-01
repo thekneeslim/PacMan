@@ -3,17 +3,56 @@
   <head>
     <meta charset="utf-8">
     <link rel="stylesheet" type="text/css" href="style.css">
-
+    <link href="https://fonts.googleapis.com/css?family=Sigmar+One" rel="stylesheet">
     <title>PACMAN!</title>
   </head>
   <body>
-
-    <div id="controls"></div>
+    <div id = "logo">
+      <img src="img/logo2.png" alt="PacMan Logo" />
+    </div>
 
     <div class="grid">
-      <canvas id="gCanvas" width="440" height="680">
-      </canvas>
+
+      <div class="note">
+        <div class="words" id="box1">
+          READY?
+        </div>
+        <div class="words" id="box2">
+          SET.
+        </div>
+        <div class="words" id="box3">
+          GO!!!
+        </div>
+        <div class="words" id="box4">
+          NICE TRY :3
+        </div>
+        <div class="words" id="box5">
+          TRY HARDER :)
+        </div>
+      </div>
+
+      <canvas id="gCanvas" width="440" height="680"></canvas>
+
+      <div class="note" id="right">
+        <div class="words" id="box6">
+          <img id ="pman" src="img/pacman.png" alt="PacMan" />
+        </div>
+        <div class="words" id="box7">
+          PLAYING!!!
+        </div>
+        <div class="words" id="box8">
+          <button type="button" name="button">RESTART</button>
+        </div>
+        <div class="words" id="box9">
+          <img id ="pman2" src="img/pman2.jpg" alt="PacMan" />
+        </div>
+      </div>
+
     </div>
+
+    <audio id="startMusic">
+       <source src="audio/pacman_beginning.wav" type="audio/wav">
+    </audio>
 
     <audio id="eatFootMusic">
       <source src="audio/pacman_chomp.wav" type="audio/wav">

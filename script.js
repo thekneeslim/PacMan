@@ -13,32 +13,32 @@ var clydeGHOST = {x: 260, y: 340, dx: GHOST_SPEED, dy: 0};
 var ghosts = [blinkyGHOST, inkyGHOST, pinkyGHOST, clydeGHOST]
 
 var rects = [ {rx: 40,   ry: 40,  w: 120,  h: 80},
-  {rx: 200,  ry: 0,   w: 40,   h: 120},
-  {rx: 280,  ry: 40,  w: 120,  h: 80},
-  {rx: 40,   ry: 160, w: 80,   h: 80},
-  {rx: 160,  ry: 160, w: 120,  h: 80},
-  {rx: 320,  ry: 160, w: 80,   h: 80},
-  {rx: 0,    ry: 280, w: 80,   h: 40},
-  {rx: 120,  ry: 280, w: 80,   h: 40},
-  {rx: 240,  ry: 280, w: 80,   h: 40},
-  {rx: 360,  ry: 280, w: 80,   h: 40},
-  {rx: 0,    ry: 360, w: 80,   h: 80},
-  {rx: 120,  ry: 320, w: 40,   h: 80},
-  {rx: 160,  ry: 360, w: 120,  h: 40},
-  {rx: 280,  ry: 320, w: 40,   h: 80},
-  {rx: 360,  ry: 360, w: 80,   h: 80},
-  {rx: 120,  ry: 440, w: 80,   h: 40},
-  {rx: 240,  ry: 440, w: 80,   h: 40},
-  {rx: 40,   ry: 480, w: 40,   h: 40},
-  {rx: 360,  ry: 480, w: 40,   h: 40},
-  {rx: 40,   ry: 560, w: 40,   h: 80},
-  {rx: 80,   ry: 600, w: 40,   h: 40},
-  {rx: 120,  ry: 520, w: 40,   h: 40},
-  {rx: 160,  ry: 520, w: 40,   h: 120},
-  {rx: 240,  ry: 520, w: 40,   h: 120},
-  {rx: 280,  ry: 520, w: 40,   h: 40},
-  {rx: 320,  ry: 600, w: 40,   h: 40},
-  {rx: 360,  ry: 560, w: 40,   h: 80}
+              {rx: 200,  ry: 0,   w: 40,   h: 120},
+              {rx: 280,  ry: 40,  w: 120,  h: 80},
+              {rx: 40,   ry: 160, w: 80,   h: 80},
+              {rx: 160,  ry: 160, w: 120,  h: 80},
+              {rx: 320,  ry: 160, w: 80,   h: 80},
+              {rx: 0,    ry: 280, w: 80,   h: 40},
+              {rx: 120,  ry: 280, w: 80,   h: 40},
+              {rx: 240,  ry: 280, w: 80,   h: 40},
+              {rx: 360,  ry: 280, w: 80,   h: 40},
+              {rx: 0,    ry: 360, w: 80,   h: 80},
+              {rx: 120,  ry: 320, w: 40,   h: 80},
+              {rx: 160,  ry: 360, w: 120,  h: 40},
+              {rx: 280,  ry: 320, w: 40,   h: 80},
+              {rx: 360,  ry: 360, w: 80,   h: 80},
+              {rx: 120,  ry: 440, w: 80,   h: 40},
+              {rx: 240,  ry: 440, w: 80,   h: 40},
+              {rx: 40,   ry: 480, w: 40,   h: 40},
+              {rx: 360,  ry: 480, w: 40,   h: 40},
+              {rx: 40,   ry: 560, w: 40,   h: 80},
+              {rx: 80,   ry: 600, w: 40,   h: 40},
+              {rx: 120,  ry: 520, w: 40,   h: 40},
+              {rx: 160,  ry: 520, w: 40,   h: 120},
+              {rx: 240,  ry: 520, w: 40,   h: 120},
+              {rx: 280,  ry: 520, w: 40,   h: 40},
+              {rx: 320,  ry: 600, w: 40,   h: 40},
+              {rx: 360,  ry: 560, w: 40,   h: 80}
 ]
 
 var decisionPoints = [
@@ -105,10 +105,32 @@ var ctx = document.getElementById('gCanvas').getContext('2d')
 var cW = ctx.canvas.width
 var cH = ctx.canvas.height
 
+
+// LISTENING FOR KEYBOARD INPUTS
+document.addEventListener('keydown', function (event) {
+  var keyPress = event.keyCode
+  defaultMovements()
+  if (keyPress === 38) {
+    MOVING_UP = true
+  } else if (keyPress === 40) {
+    MOVING_DOWN = true
+  } else if (keyPress === 37) {
+    MOVING_LEFT = true
+  } else if (keyPress === 39) {
+    MOVING_RIGHT = true
+  }
+})
+
 //  GAME START CONTROL
 window.addEventListener('load', function (event) {
-  initCanvas()
+  document.getElementById('startMusic').play()
+  setTimeout (startingGame, 4000);
 })
+
+function startingGame() {
+  document.getElementById('startGame').style.zIndex = "-1";
+  initCanvas();
+}
 
 // INITIALIZING CANVAS PROPERTIES
 function initCanvas () {
@@ -124,13 +146,13 @@ function pM () {
 
   if (GAMESTATUS === true) {
     if (checkWin() === false) {
-      if (checkDeath() === false) {
+      if (pmCheckDeath() === false) {
         if (checkBorder(pMAN)) {
           moveIcons(pMAN);
           inky();
-          // clyde();
-          // blinky();
-          // pinky();
+          clyde();
+          blinky();
+          pinky();
           eatFood();
           teleport(pMAN);
         }
@@ -141,7 +163,6 @@ function pM () {
     // gameOverNote()
     }
   }
-
   drawFood()
   drawPM(pMAN[0], pMAN[1]);
 }
@@ -178,7 +199,6 @@ function drawGrid (rx, ry, w, h) {
 // DRAWING PACKMAN
 function drawPM () {
   ctx.save()
-
   // DRAWING HERE
   ctx.beginPath()
   ctx.fillStyle = 'yellow'
@@ -194,14 +214,21 @@ function drawPM () {
 
 // DRAWING INKY
 function drawINKY () {
+  var death = false;
   var inky = new Image()
   if (PILLACTIVE === false) {
-    inky.src = 'img/inky.png'
-  } else if (PILLACTIVE === true) {
-    inky.src = 'img/undead.gif'
+    inky.src = 'img/inky.png';
+  } else if (PILLACTIVE === true && gCheckDeath() === true) {
+    death = true;
+    inky.src = 'img/eyes.png';
+    inkyGHOST.x = 220;
+    inkyGHOST.y = 300;
+
+  } else if (PILLACTIVE === true && death === false) {
+    inky.src = 'img/undead.gif';
   }
   ctx.beginPath()
-  ctx.drawImage(inky, inkyGHOST.x - 20, inkyGHOST.y - 20, 40, 40)
+  ctx.drawImage(inky, inkyGHOST.x - 20, inkyGHOST.y - 20, 30, 30)
   ctx.closePath()
 }
 
@@ -267,7 +294,15 @@ function drawFood () {
 }
 
 // CHECKING DEATH
-function checkDeath () {
+function pmCheckDeath() {
+  return checkingDeath();
+}
+
+function gCheckDeath() {
+  return checkingDeath();
+}
+
+function checkingDeath () {
   var m = 0
   var g
   for (var i = 0; i < ghosts.length; i++) {
@@ -319,11 +354,12 @@ function checkDeath () {
   if (m > 0) {
     GAMESTATUS = false
     document.getElementById('loseMusic').play()
+    document.getElementById('death').style.zIndex = "1";
     return true
   }
   if (m < 0) {
     document.getElementById('eatghost').play()
-    return false
+    return true
   }
   return false
 }
@@ -340,34 +376,16 @@ function eatFood () {
         if (map[i][k] === 1) {
           map[i][k] = 4
           PILLACTIVE = true;
-          // pillActiveMode();
+          setTimeout(changePillStatus, 8000);
         }
       }
     }
   }
 }
 
-// PILL ACTIVE FUNCTION
-// function pillActiveMode() {
-//   for(var i = 0; i < 4; i++){
-//     document.getElementById('siren').play();
-//   }
-// }
-
-// LISTENING FOR KEYBOARD INPUTS
-document.addEventListener('keydown', function (event) {
-  var keyPress = event.keyCode
-  defaultMovements()
-  if (keyPress === 38) {
-    MOVING_UP = true
-  } else if (keyPress === 40) {
-    MOVING_DOWN = true
-  } else if (keyPress === 37) {
-    MOVING_LEFT = true
-  } else if (keyPress === 39) {
-    MOVING_RIGHT = true
-  }
-})
+function changePillStatus() {
+  PILLACTIVE = false;
+}
 
 // TELEPORT FUNCTION
 function teleport (name) {
@@ -435,7 +453,6 @@ function pickNewDirection(name) {
   } else {
     dx = -GHOST_SPEED
   }
-
   name.dx = dx;
   name.dy = dy;
 }
@@ -457,8 +474,7 @@ function moveIcons (name) {
     dx++
   }
 
-  // only actually set the new values of
-  // x and y if there was no collision.
+  // only actually set the new values of x and y if there was no collision.
   if (checkRectCollide(name[0] + dx, name[1] + dy) === false) {
     name[0] = name[0] + dx
     name[1] = name[1] + dy
@@ -466,7 +482,6 @@ function moveIcons (name) {
 }
 
 // PREVENTING ICONS FROM ENTERING RECTANGLE
-
 function checkRectCollide(ix, iy) {
   if (ix < 20 || iy < 20) {
     return true;
@@ -551,4 +566,5 @@ function restartGame () {
   inkyGHOST   = [200, 280]
   pinkyGHOST  = [200, 320]
   clydeGHOST  = [240, 320]
+  initCanvas();
 }
