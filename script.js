@@ -41,28 +41,49 @@ var rects = [ {rx: 40,   ry: 40,  w: 120,  h: 80},
 ]
 
 var decisionPoints = [
-  {rx: 220,  ry: 340, w: 10,   h: 10}
+  {rx: 0,    ry: 120, w: 40,   h: 40},
+  {rx: 120,  ry: 120, w: 40,   h: 40},
+  {rx: 160,  ry: 120, w: 40,   h: 40},
+  {rx: 200,  ry: 120, w: 40,   h: 40},
+  {rx: 280,  ry: 120, w: 40,   h: 40},
+  {rx: 120,  ry: 240, w: 40,   h: 40},
+  {rx: 280,  ry: 240, w: 40,   h: 40},
+  {rx: 80,   ry: 320, w: 40,   h: 40},
+  {rx: 320,  ry: 320, w: 40,   h: 40},
+  {rx: 280,  ry: 400, w: 40,   h: 40},
+  {rx: 200,  ry: 400, w: 40,   h: 40},
+  {rx: 320,  ry: 400, w: 40,   h: 40},
+  {rx: 80,   ry: 440, w: 40,   h: 40},
+  {rx: 320,  ry: 440, w: 40,   h: 40},
+  {rx: 80,   ry: 480, w: 40,   h: 40},
+  {rx: 400,  ry: 480, w: 40,   h: 40},
+  {rx: 320,  ry: 480, w: 40,   h: 40},
+  {rx: 0,    ry: 520, w: 40,   h: 40},
+  {rx: 80,   ry: 520, w: 40,   h: 40},
+  {rx: 320,  ry: 520, w: 40,   h: 40},
+  {rx: 400,  ry: 520, w: 40,   h: 40},
+  {rx: 120,  ry: 640, w: 40,   h: 40},
+  {rx: 200,  ry: 640, w: 40,   h: 40},
+  {rx: 280,  ry: 640, w: 40,   h: 40}
 ]
 
-//rects = [{rx: 200,  ry: 500, w: 40,   h: 80}]
-
 var map = [   [0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0],
-  [1, 2, 2, 2, 0, 2, 0, 2, 2, 2, 1],
-  [0, 2, 2, 2, 0, 2, 0, 2, 2, 2, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 2, 2, 0, 2, 2, 2, 0, 2, 2, 0],
-  [0, 2, 2, 0, 2, 2, 2, 0, 2, 2, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [2, 2, 0, 2, 2, 5, 2, 2, 0, 2, 2],
-  [0, 0, 0, 2, 5, 5, 5, 2, 0, 0, 0],
-  [2, 2, 0, 2, 2, 2, 2, 2, 0, 2, 2],
-  [2, 2, 0, 5, 5, 5, 5, 5, 0, 2, 2],
-  [0, 0, 0, 2, 2, 0, 2, 2, 0, 0, 0],
-  [0, 2, 0, 0, 0, 0, 0, 0, 0, 2, 0],
-  [0, 0, 0, 2, 2, 0, 2, 2, 0, 0, 0],
-  [1, 2, 0, 0, 2, 0, 2, 0, 0, 2, 1],
-  [0, 2, 2, 0, 2, 0, 2, 0, 2, 2, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
+              [1, 2, 2, 2, 0, 2, 0, 2, 2, 2, 1],
+              [0, 2, 2, 2, 0, 2, 0, 2, 2, 2, 0],
+              [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              [0, 2, 2, 0, 2, 2, 2, 0, 2, 2, 0],
+              [0, 2, 2, 0, 2, 2, 2, 0, 2, 2, 0],
+              [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              [2, 2, 0, 2, 2, 5, 2, 2, 0, 2, 2],
+              [0, 0, 0, 2, 5, 5, 5, 2, 0, 0, 0],
+              [2, 2, 0, 2, 2, 2, 2, 2, 0, 2, 2],
+              [2, 2, 0, 5, 5, 5, 5, 5, 0, 2, 2],
+              [0, 0, 0, 2, 2, 0, 2, 2, 0, 0, 0],
+              [0, 2, 0, 0, 0, 0, 0, 0, 0, 2, 0],
+              [0, 0, 0, 2, 2, 0, 2, 2, 0, 0, 0],
+              [1, 2, 0, 0, 2, 0, 2, 0, 0, 2, 1],
+              [0, 2, 2, 0, 2, 0, 2, 0, 2, 2, 0],
+              [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
 
 var MOVING_UP = false
 var MOVING_DOWN = false
@@ -90,28 +111,29 @@ function pM () {
   ctx.clearRect(0, 0, cW, cH)
   drawGrid()
 
-  if (checkWin() === false) {
-    if (checkDeath() === false) {
-      if (checkBorder(pMAN)) {
-        moveIcons(pMAN)
-        inky()
-        eatFood()
-        teleport(pMAN)
-        checkDeath()
+  if (GAMESTATUS === true) {
+    if (checkWin() === false) {
+      if (checkDeath() === false) {
+        if (checkBorder(pMAN)) {
+          moveIcons(pMAN);
+          inky();
+          eatFood();
+          teleport(pMAN);
+        }
       }
+    } else {
+      document.getElementById('winMusic').play()
+      GAMESTATUS = false
+    // gameOverNote()
     }
-  } else {
-    document.getElementById('winMusic').play()
-    GAMESTATUS = false
-  // gameOverNote()
   }
 
   drawFood()
-  drawPM(pMAN[0], pMAN[1])
-  inky(inkyGHOST[0], inkyGHOST[1])
-  pinky(pinkyGHOST[0], pinkyGHOST[1])
-  clyde(clydeGHOST[0], clydeGHOST[1])
-  blinky(blinkyGHOST[0], blinkyGHOST[1])
+  drawPM(pMAN[0], pMAN[1]);
+  // inky(inkyGHOST[0], inkyGHOST[1]);
+  // pinky(pinkyGHOST[0], pinkyGHOST[1]);
+  // clyde(clydeGHOST[0], clydeGHOST[1]);
+  // blinky(blinkyGHOST[0], blinkyGHOST[1]);
 }
 
 // GHOST FUNCTIONS & MOVEMENT
@@ -240,41 +262,41 @@ function checkDeath () {
   var g
   for (var i = 0; i < ghosts.length; i++) {
     // CHECKING TOP COLLIDE
-    if (pMAN[0] === (ghosts[i][0] - 15)) {
-      if (pMAN[1] >= (ghosts[i][1] - 15) && pMAN[1] <= (ghosts[i][1] + 30 - 15)) {
+    if (pMAN[0] === (ghosts[i].x - 15)) {
+      if (pMAN[1] >= (ghosts[i].y - 15) && pMAN[1] <= (ghosts[i].y + 30 - 15)) {
         if (PILLACTIVE === false) {
           m = m + 1
-        } else if (PILLACTUVE === true) {
+        } else if (PILLACTIVE === true) {
           m = m - 1
           g = ghosts[i]
         }
       }
     }
     // CHECKING BOTTOM COLLIDE
-    if (pMAN[0] === (ghosts[i][0] + 30 - 15)) {
-      if (pMAN[1] >= (ghosts[i][1] - 15) && pMAN[1] <= (ghosts[i][1] + 30 - 15)) {
+    if (pMAN[0] === (ghosts[i].x + 30 - 15)) {
+      if (pMAN[1] >= (ghosts[i].y - 15) && pMAN[1] <= (ghosts[i].y + 30 - 15)) {
         if (PILLACTIVE === false) {
           m = m + 1
-        } else if (PILLACTUVE === true) {
+        } else if (PILLACTIVE === true) {
           m = m - 1
           g = ghosts[i]
         }
       }
     }
     // CHECKING LEFT COLLIDE
-    if (pMAN[1] === (ghosts[i][1] - 15)) {
-      if (pMAN[0] >= (ghosts[i][0] - 15) && pMAN[0] <= (ghosts[i][0] + 30 - 15)) {
+    if (pMAN[1] === (ghosts[i].y - 15)) {
+      if (pMAN[0] >= (ghosts[i].x - 15) && pMAN[0] <= (ghosts[i].x + 30 - 15)) {
         if (PILLACTIVE === false) {
           m = m + 1
-        } else if (PILLACTUVE === true) {
+        } else if (PILLACTIVE === true) {
           m = m - 1
           g = ghosts[i]
         }
       }
     }
     // CHECKING RIGHT COLLIDE
-    if (pMAN[1] === (ghosts[i][1] + 30 - 15)) {
-      if (pMAN[0] >= (ghosts[i][0] - 15) && pMAN[0] <= (ghosts[i][0] + 30 - 15)) {
+    if (pMAN[1] === (ghosts[i].y + 30 - 15)) {
+      if (pMAN[0] >= (ghosts[i].x - 15) && pMAN[0] <= (ghosts[i].x + 30 - 15)) {
         if (PILLACTIVE === false) {
           m = m + 1
         } else if (PILLACTIVE === true) {
@@ -303,14 +325,22 @@ function eatFood () {
       if (Math.floor(pMAN[0] / 40) === k && Math.floor(pMAN[1] / 40) === i) {
         if (map[i][k] === 0) {
           map[i][k] = 3
-          document.getElementById('eatFootMusic').play()
+          document.getElementById('eatFootMusic').play();
         }
         if (map[i][k] === 1) {
           map[i][k] = 4
-          document.getElementById('siren').play()
+          PILLACTIVE = true;
+          pillActiveMode();
         }
       }
     }
+  }
+}
+
+// PILL ACTIVE FUNCTION
+function pillActiveMode() {
+  for(var i = 0; i < 4; i++){
+    document.getElementById('siren').play();
   }
 }
 
