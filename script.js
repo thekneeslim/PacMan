@@ -423,25 +423,25 @@ function checkRectCollide(ix, iy) {
 
   for(var i = 0; i < rects.length; i++) {
     // CHECKING TOP COLLIDE
-    if (iy === (rects[i].ry - collisionDistance)) {
+    if (MOVING_DOWN && iy === (rects[i].ry - collisionDistance)) {
       if (ix >= (rects[i].rx - collisionDistance) && ix <= (rects[i].rx + rects[i].w + collisionDistance)) {
         return true;
       }
     }
     // CHECKING BOTTOM COLLIDE
-    if (iy === (rects[i].ry + rects[i].h + collisionDistance)) {
+    if (MOVING_UP && iy === (rects[i].ry + rects[i].h + collisionDistance)) {
       if (ix >= (rects[i].rx - collisionDistance) && ix <= (rects[i].rx + rects[i].w + collisionDistance)) {
         return true;
       }
     }
     // CHECKING LEFT COLLIDE
-    if (ix === (rects[i].rx - collisionDistance)) {
+    if (MOVING_RIGHT && ix === (rects[i].rx - collisionDistance)) {
       if (iy >= (rects[i].ry - collisionDistance) && iy <= (rects[i].ry + rects[i].h + collisionDistance)) {
         return true;
       }
     }
     // CHECKING RIGHT COLLIDE
-    if (ix === (rects[i].rx + rects[i].w + collisionDistance)) {
+    if (MOVING_LEFT && ix === (rects[i].rx + rects[i].w + collisionDistance)) {
       if (iy >= (rects[i].ry - collisionDistance) && iy <= (rects[i].ry + rects[i].h + collisionDistance)) {
         return true;
       }
