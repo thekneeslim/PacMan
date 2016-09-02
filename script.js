@@ -7,10 +7,10 @@ var PILLACTIVE = false
 var movePMInterval;
 
 var pMAN = [220, 420]
-var blinkyGHOST = {x: 180, y: 340, dx: GHOST_SPEED, dy: 0};
+var blinkyGHOST = {x: 20, y: 460, dx: GHOST_SPEED, dy: 0};
 var inkyGHOST = {x: 220, y:300, dx: 0, dy: -GHOST_SPEED};
-var pinkyGHOST = {x: 220, y: 340, dx: -GHOST_SPEED, dy: 0};
-var clydeGHOST = {x: 260, y: 340, dx: GHOST_SPEED, dy: 0};
+var pinkyGHOST = {x: 420, y: 460, dx: -GHOST_SPEED, dy: 0};
+var clydeGHOST = {x: 420, y: 260, dx: GHOST_SPEED, dy: 0};
 var ghosts = [blinkyGHOST, inkyGHOST, pinkyGHOST, clydeGHOST]
 
 var rects = [ {rx: 40,   ry: 40,  w: 120,  h: 80},
@@ -154,6 +154,9 @@ function initCanvas () {
   document.getElementById("box3.5").style.color = "black";
   document.getElementById("box7").style.color = "white";
   ghostMove(inkyGHOST)
+  ghostMove(pinkyGHOST)
+  ghostMove(blinkyGHOST)
+  ghostMove(clydeGHOST)
   pM()
   movePMInterval = setInterval(pM, speed)
 }
@@ -257,11 +260,18 @@ function drawINKY () {
 
 // DRAWING CLYDE
 function drawCLYDE () {
+  var death = false;
   var clyde = new Image()
   if (PILLACTIVE === false) {
     clyde.src = 'img/clyde.png'
-  } else if (PILLACTIVE === true) {
-    clyde.src = 'img/undead.gif'
+  } else if (PILLACTIVE === true && gCheckDeath() === true) {
+    death = true;
+    clyde.src = 'img/eyes.png';
+    clydeGHOST.x = 420;
+    clydeGHOST.y = 460;
+
+  } else if (PILLACTIVE === true && death === false) {
+    clyde.src = 'img/undead.gif';
   }
   ctx.beginPath()
   ctx.drawImage(clyde, clydeGHOST.x - 15, clydeGHOST.y - 15 , 30, 30)
@@ -270,11 +280,18 @@ function drawCLYDE () {
 
 // DRAWING BLINKY
 function drawBLINKY () {
+  var death = false;
   var blinky = new Image()
   if (PILLACTIVE === false) {
     blinky.src = 'img/blinky.png'
-  } else if (PILLACTIVE === true) {
-    blinky.src = 'img/undead.gif'
+  } else if (PILLACTIVE === true && gCheckDeath() === true) {
+    death = true;
+    blinky.src = 'img/eyes.png';
+    blinkyGHOST.x = 20;
+    blinkyGHOST.y = 460;
+
+  } else if (PILLACTIVE === true && death === false) {
+    blinky.src = 'img/undead.gif';
   }
   ctx.beginPath()
   ctx.drawImage(blinky, blinkyGHOST.x - 15, blinkyGHOST.y - 15, 30, 30)
@@ -283,11 +300,18 @@ function drawBLINKY () {
 
 // DRAWING PINKY
 function drawPINKY () {
+  var death = false;
   var pinky = new Image()
   if (PILLACTIVE === false) {
     pinky.src = 'img/pinky.png'
-  } else if (PILLACTIVE === true) {
-    pinky.src = 'img/undead.gif'
+  } else if (PILLACTIVE === true && gCheckDeath() === true) {
+    death = true;
+    pinky.src = 'img/eyes.png';
+    pinkyGHOST.x = 420;
+    pinkyGHOST.y = 460;
+
+  } else if (PILLACTIVE === true && death === false) {
+    pinky.src = 'img/undead.gif';
   }
   ctx.beginPath()
   ctx.drawImage(pinky, pinkyGHOST.x - 15, pinkyGHOST.y - 15, 30, 30)
@@ -589,10 +613,11 @@ function restartGame () {
     }
   }
   pMAN        = [220, 420]
-  blinkyGHOST = {x: 180, y: 340, dx: GHOST_SPEED, dy: 0};
+  blinkyGHOST = {x: 20, y: 460, dx: GHOST_SPEED, dy: 0};
   inkyGHOST   = {x: 220, y:300, dx: 0, dy: -GHOST_SPEED};
-  pinkyGHOST  = {x: 220, y: 340, dx: -GHOST_SPEED, dy: 0};
-  clydeGHOST  = {x: 260, y: 340, dx: GHOST_SPEED, dy: 0};
+  pinkyGHOST  = {x: 420, y: 460, dx: -GHOST_SPEED, dy: 0};
+  clydeGHOST  = {x: 420, y: 260, dx: GHOST_SPEED, dy: 0};
+
   defaultMovements();
   PILLACTIVE = false;
   GAMESTATUS = true;
